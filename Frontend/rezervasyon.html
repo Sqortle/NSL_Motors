@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervasyon ve Ödeme - NSL MOTORS</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="background-effects"></div>
+
+    <header class="navbar glass-card">
+        <div class="logo">NSL MOTORS</div>
+        
+        <div class="nav-right-group">
+            <nav class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="iletisim.html">İletişim</a> 
+            </nav>
+            <div class="contact">
+                <a href="giris.html" id="login-link" class="contact-btn">Giriş Yap</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="reservation-full" class="page-section glass-card login-form-container" style="display: block; max-width: 650px;">
+            
+            <h1 class="section-title glass-text" style="text-align: center;">Tuning Rezervasyonunuz</h1>
+            
+            <div style="background: rgba(0, 224, 255, 0.1); padding: 20px; border-radius: 10px; border-left: 5px solid var(--main-accent); margin-bottom: 30px;">
+                <p style="font-weight: bold; color: var(--main-accent);">Seçilen Hizmet:</p>
+                <p id="selected-service-info" style="font-size: 1.1em; color: var(--text-color);">Yükleniyor...</p>
+            </div>
+
+            <form class="glass-form reservation-form">
+                <h2 class="glass-text" style="font-size: 1.5em; margin-bottom: 30px;">Randevu Bilgileri</h2>
+
+                <div class="form-group">
+                    <label for="reservation-date">Tercih Edilen Randevu Tarihi</label>
+                    <input type="date" id="reservation-date" class="glass-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reservation-time">Tercih Edilen Saat Aralığı</label>
+                    <input type="time" id="reservation-time" class="glass-input" required>
+                </div>
+                
+                <h2 class="glass-text" style="font-size: 1.5em; margin-top: 40px; margin-bottom: 30px;">Ödeme Bilgileri (Ön Ödeme)</h2>
+
+                <div class="form-group">
+                    <label for="card-holder">Kart Üzerindeki İsim</label>
+                    <input type="text" id="card-holder" class="glass-input" placeholder="Ad Soyad" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="card-number">Kart Numarası</label>
+                    <input type="text" id="card-number" class="glass-input" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                </div>
+
+                <div style="display: flex; gap: 20px;">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="card-expiry">Son Kullanma Tarihi</label>
+                        <input type="text" id="card-expiry" class="glass-input" placeholder="AA/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="card-cvc">CVC</label>
+                        <input type="text" id="card-cvc" class="glass-input" placeholder="XXX" maxlength="3" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn primary-btn" style="margin-top: 20px;">Ön Ödemeyi Yap ve Rezervasyonu Onayla</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        // Seçilen modeli ve stage bilgisini URL'den alır
+        function loadReservationDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const stage = params.get('stage');
+            const model = params.get('model');
+            const infoElement = document.getElementById('selected-service-info');
+
+            if (stage && model) {
+                const modelName = model.toUpperCase(); // Örnek olarak 'GTR'
+                infoElement.innerHTML = `${modelName} - ${stage} Tuning Paketi`;
+            } else {
+                infoElement.textContent = "Lütfen Ana Sayfadan bir model ve aşama seçimi yapın.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadReservationDetails);
+    </script>
+</body>
+</html>

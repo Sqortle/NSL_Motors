@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap / Kayıt Ol - NSL MOTORS</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="background-effects">
+        </div>
+
+    <header class="navbar glass-card">
+        <div class="logo">NSL MOTORS</div>
+        
+        <div class="nav-right-group">
+            
+            <nav class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="iletisim.html">İletişim</a> 
+            </nav>
+            
+            <div class="contact">
+                <a href="giris.html" id="login-link" class="contact-btn active-btn-override">Giriş Yap</a>
+            </div>
+            
+        </div>
+        
+    </header>
+
+    <main class="container">
+        
+        <section id="login-register-full" class="page-section glass-card login-form-container" style="display: block;">
+            
+            <div id="login-tab" class="auth-tab-content active-tab">
+                <h2 class="section-title glass-text">Hesabınıza Giriş Yapın</h2>
+                <form class="glass-form login-form">
+                    
+                    <div class="form-group">
+                        <label for="login-email">E-posta Adresi</label>
+                        <input type="email" id="login-email" class="glass-input" placeholder="E-posta adresinizi girin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Şifre</label>
+                        <input type="password" id="login-password" class="glass-input" placeholder="Şifrenizi girin" required>
+                    </div>
+                    
+                    <button type="submit" class="btn primary-btn">Giriş Yap</button>
+                    
+                    <p class="form-footer">Hesabınız yok mu? <a href="#" class="glass-link switch-form" data-target="register">Şimdi Kayıt Olun.</a></p>
+                </form>
+            </div>
+            
+            <div id="register-tab" class="auth-tab-content" style="display: none;">
+                <h2 class="section-title glass-text">Yeni Hesap Oluşturun</h2>
+                <form class="glass-form register-form">
+                    
+                    <div class="form-group">
+                        <label for="register-name">Ad Soyad</label>
+                        <input type="text" id="register-name" class="glass-input" placeholder="Adınızı ve Soyadınızı girin" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email">E-posta Adresi</label>
+                        <input type="email" id="register-email" class="glass-input" placeholder="Geçerli bir e-posta girin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">Şifre (En az 6 karakter)</label>
+                        <input type="password" id="register-password" class="glass-input" placeholder="Yeni şifrenizi belirleyin" required>
+                    </div>
+
+                    <button type="submit" class="btn primary-btn">Kayıt Ol</button>
+                    <p class="form-footer">Zaten hesabınız var mı? <a href="#" class="glass-link switch-form" data-target="login">Giriş Yap</a></p>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+    
+    <div id="modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content glass-card">
+            </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.switch-form').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = e.target.dataset.target; // "login" veya "register"
+
+                // Tüm formları gizle
+                document.querySelectorAll('.auth-tab-content').forEach(tab => {
+                    tab.style.display = 'none';
+                });
+
+                // Hedef formu göster
+                document.getElementById(targetTab + '-tab').style.display = 'block';
+                
+                // Başlığı da güncelleyebiliriz (opsiyonel)
+                const title = (targetTab === 'login') ? 'Hesabınıza Giriş Yapın' : 'Yeni Hesap Oluşturun';
+                document.querySelector('.auth-tab-content#' + targetTab + '-tab h2').textContent = title;
+            });
+        });
+    </script>
+
+</body>
+</html>

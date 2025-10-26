@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Detayı ve Tuning Karşılaştırması - NSL MOTORS</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="background-effects"></div>
+
+    <header class="navbar glass-card">
+        <div class="logo">NSL MOTORS</div>
+        
+        <div class="nav-right-group">
+            <nav class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="iletisim.html">İletişim</a> 
+            </nav>
+            <div class="contact">
+                <a href="giris.html" id="login-link" class="contact-btn">Giriş Yap</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section id="car-detail" class="page-section" style="display: block; margin-top: 50px;">
+
+            <h1 class="section-title glass-text" id="model-title" style="text-align: center; margin-bottom: 50px;">Model Tuning Detayları</h1>
+
+            <div class="model-info-summary glass-card" style="padding: 30px; margin-bottom: 40px;">
+                <h3 class="glass-text" id="model-summary-title"></h3>
+                <p id="model-summary-description" style="color: rgba(255, 255, 255, 0.7);"></p>
+            </div>
+
+            <div class="comparison-grid" id="comparison-grid">
+                <div class="loading-message">Yükleniyor...</div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content glass-card"></div>
+    </div>
+
+    <script>
+        // Örnek sahte veritabanı (Normalde bir API'dan gelir)
+        const mockTuningData = {
+            'NISSAN-GT-R-R35': {
+                name: 'Nissan GT-R R35',
+                description: 'Efsanevi Godzilla. VR38DETT motorunun gizli potansiyelini Liquid Glass gücüyle ortaya çıkarıyoruz. Her aşama, günlük kullanımdan pist dominasyonuna kadar optimize edilmiştir.',
+                image: 'https://images.unsplash.com/photo-1544435889-da6afc64c7ff?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1200',
+                stages: [
+                    { stage: 'Stok', hp: 570, torque: 637, price: '---' },
+                    { stage: 'Stage 1', hp: 650, torque: 800, price: '7.500 €', notes: 'Yazılım optimizasyonu ve filtre değişimi. Güvenli günlük kullanım.' },
+                    { stage: 'Stage 2', hp: 750, torque: 950, price: '15.000 €', notes: 'Downpipe, intercooler ve özel yazılım. Yüksek performanslı sokak aracı.' },
+                    { stage: 'Stage 3', hp: 900, torque: 1100, price: '35.000 €+', notes: 'Yükseltilmiş turbo, yakıt sistemi ve güçlendirilmiş motor parçaları. Pist için özel ayar.' }
+                ]
+            },
+            'BMW-M4-G82': {
+                name: 'BMW M4 G82',
+                description: 'Yenilikçi S58 motoru, NSL MOTORS mühendisliği ile buluşuyor. Daha keskin tepkiler, daha yüksek son hız ve mutlak sürüş keyfi.',
+                image: 'https://images.unsplash.com/photo-1580252115162-817926b23b88?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1200',
+                stages: [
+                    { stage: 'Stok', hp: 510, torque: 650, price: '---' },
+                    { stage: 'Stage 1', hp: 620, torque: 780, price: '6.000 €', notes: 'ECU optimizasyonu. Günlük kullanımda hissedilir güç artışı.' },
+                    { stage: 'Stage 2', hp: 680, torque: 850, price: '12.000 €', notes: 'Downpipe, hava emiş kiti ve özel map. Yüksek ses ve performans.' },
+                    { stage: 'Stage 3', hp: 750, torque: 900, price: '25.000 €+', notes: 'Hibrit turbo yükseltmesi ve metanol enjeksiyonu. Yarış odaklı kurulum.' }
+                ]
+            },
+            'AUDI-RS7-SPORTBACK': {
+                name: 'Audi RS7 Sportback',
+                description: 'Lüks ve performansın mükemmel birleşimi. V8 Twin Turbo gücünü yepyeni bir boyuta taşıyoruz. Konfor ve hızdan ödün vermeden.',
+                image: 'https://images.unsplash.com/photo-1601004123862-5883713063af?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1200',
+                stages: [
+                    { stage: 'Stok', hp: 600, torque: 800, price: '---' },
+                    { stage: 'Stage 1', hp: 720, torque: 950, price: '8.500 €', notes: 'Yazılım ve TCU optimizasyonu. İnanılmaz hızlanma.' },
+                    { stage: 'Stage 2', hp: 800, torque: 1050, price: '18.000 €', notes: 'Spor katalizörler, intercooler ve yazılım revizyonu. Tamamen dinamik sürüş.' },
+                    { stage: 'Stage 3', hp: 950, torque: 1200, price: '40.000 €+', notes: 'Büyük turbo kitleri ve güçlendirilmiş şanzıman. Maksimum performans.' }
+                ]
+            },
+            // Diğer modeller buraya eklenebilir
+        };
+
+        function loadCarDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const modelKey = params.get('model');
+            const data = mockTuningData[modelKey];
+
+            const titleElement = document.getElementById('model-title');
+            const summaryTitleElement = document.getElementById('model-summary-title');
+            const summaryDescElement = document.getElementById('model-summary-description');
+            const gridContainer = document.getElementById('comparison-grid');
+
+            if (!data) {
+                titleElement.textContent = "Model Bulunamadı";
+                summaryTitleElement.textContent = "Hata";
+                summaryDescElement.textContent = "Detaylarını görmek istediğiniz model bulunamadı veya veritabanımızda kayıtlı değil.";
+                gridContainer.innerHTML = `<p class="glass-text" style="text-align: center;">Lütfen Ana Sayfadan geçerli bir model seçimi yapın.</p>`;
+                return;
+            }
+
+            // Sayfa başlıklarını güncelle
+            titleElement.textContent = `${data.name} Tuning Karşılaştırması`;
+            summaryTitleElement.textContent = `${data.name} - Liquid Glass Performans Paketi`;
+            summaryDescElement.textContent = data.description;
+            
+            // Grid içeriğini temizle
+            gridContainer.innerHTML = '';
+
+            // Kartları oluştur
+            data.stages.forEach((stageData, index) => {
+                const isStock = stageData.stage === 'Stok';
+                const card = document.createElement('div');
+                card.classList.add('comparison-card', 'glass-card');
+                
+                // İlk kart (Stok) için özel sınıf ekle
+                if(isStock) {
+                    card.classList.add('stock-card');
+                } else if (index === data.stages.length - 1) {
+                     // Son kart (Stage 3) için ekstra vurgu
+                    card.classList.add('ultimate-card');
+                }
+
+
+                card.innerHTML = `
+                    <h3 class="glass-text stage-title">${stageData.stage}</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Beygir Gücü (HP)</span>
+                            <span class="stat-value">${stageData.hp}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Tork (Nm)</span>
+                            <span class="stat-value">${stageData.torque}</span>
+                        </div>
+                    </div>
+                    <div class="price-section">
+                        <span class="price-label">Fiyat</span>
+                        <span class="price-value">${stageData.price}</span>
+                    </div>
+                    ${stageData.notes ? `<p class="stage-notes">${stageData.notes}</p>` : ''}
+                    ${!isStock ? `<a href="rezervasyon.html?model=${modelKey}&stage=${stageData.stage.replace(' ', '')}" class="btn primary-btn reserve-btn">Rezervasyon</a>` : ''}
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCarDetails);
+    </script>
+</body>
+</html>
