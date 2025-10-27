@@ -1,12 +1,13 @@
 package com.ims.nslmotors.services;
 
-import com.ims.nslmotors.dto.UserResponseDto;
+import com.ims.nslmotors.dto.DTOUser;
+import com.ims.nslmotors.dto.DTOUser;
 import java.util.List;
 
 public interface IUserService {
 
     // Tüm kullanıcıları çekme metodu (Read operasyonu)
-    List<UserResponseDto> getAllUsers();
+    List<DTOUser> getAllUsers();
 
     // İleride eklenecek metotlar: registerNewCustomer, deleteUser, updateUser, vb.
 }

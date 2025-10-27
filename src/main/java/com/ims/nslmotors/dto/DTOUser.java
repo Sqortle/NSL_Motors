@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 // Dışarıya gönderilecek kullanıcı verilerini taşır (Şifre hariç)
 @Data
-public class UserResponseDto implements Serializable {
+public class DTOUser implements Serializable {
 
     private Long id;
     private String firstName;

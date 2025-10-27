@@ -16,3 +16,7 @@ public class NslMotorsApplication {
         SpringApplication.run(NslMotorsApplication.class, args);
     }
 }
+
+
+//# brew services start postgresql@14
+//# brew services stop postgresql@14

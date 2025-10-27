@@ -1,6 +1,7 @@
 package com.ims.nslmotors.services.impl;
 
-import com.ims.nslmotors.dto.UserResponseDto;
+import com.ims.nslmotors.dto.DTOUser;
+import com.ims.nslmotors.dto.DTOUser;
 import com.ims.nslmotors.entities.User;
 import com.ims.nslmotors.repository.UserRepository;
 import com.ims.nslmotors.services.IUserService;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements IUserService {
     // private final RoleRepository roleRepository;
 
     @Override
-    public List<UserResponseDto> getAllUsers() {
+    public List<DTOUser> getAllUsers() {
         // 1. Repository'den tüm Entity'leri çek
         List<User> users = userRepository.findAll();
 
@@ -34,8 +35,8 @@ public class UserServiceImpl implements IUserService {
     /**
      * User Entity'den UserResponseDto'ya dönü??üm metodu (BeanUtils ile)
      */
-    private UserResponseDto convertToDto(User user) {
-        UserResponseDto dto = new UserResponseDto();
+    private DTOUser convertToDto(User user) {
+        DTOUser dto = new DTOUser();
 
         // Alan adlar? ayn? olanlar? kopyala (id, firstName, email vb.)
         BeanUtils.copyProperties(user, dto);

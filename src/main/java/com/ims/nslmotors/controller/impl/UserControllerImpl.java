@@ -2,7 +2,8 @@ package com.ims.nslmotors.controller.impl;
 
 import com.ims.nslmotors.controller.IUserController;
 import com.ims.nslmotors.controller.IUserController;
-import com.ims.nslmotors.dto.UserResponseDto;
+import com.ims.nslmotors.dto.DTOUser;
+import com.ims.nslmotors.dto.DTOUser;
 import com.ims.nslmotors.services.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,9 @@ public class UserControllerImpl implements IUserController {
     // CRUD: READ - Tüm kullan?c?lar? getir
     @GetMapping("/users")
     @Override
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+    public ResponseEntity<List<DTOUser>> getAllUsers() {
         // Not: Yetkilendirme (Security) atland??? için herkes eri?ebilir.
-        List<UserResponseDto> users = userService.getAllUsers();
+        List<DTOUser> users = userService.getAllUsers();
 
         return ResponseEntity.ok(users); // HTTP 200 OK
     }
