@@ -14,26 +14,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Invoice {
 
-    // PRIMARY KEY ve FOREIGN KEY olarak Orders tablosuna bağlanır
+    // PRIMARY KEY ve FOREIGN KEY olarak Orders tablosuna ba?lan?r
     @Id
     @Column(name = "order_id")
     private Long id;
 
-    // İlişki: One-to-One (Orders tablosuna bağlanır)
+    // İlişki: One-to-One (Orders tablosuna ba?lan?r)
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId // Order'ın ID'sini PK ve FK olarak kullanır.
+    @MapsId // Order'?n ID'sini PK ve FK olarak kullan?r.
     @JoinColumn(name = "order_id")
     private Order order;
 
     @Column(name = "invoice_date", nullable = false)
     private LocalDateTime invoiceDate;
 
-    // DECIMAL için Java'da BigDecimal kullanmak en doğru yaklaşımdır.
     @Column(name = "subtotal_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal subtotalAmount;
 
     @Column(name = "tax_rate", precision = 4, scale = 2, nullable = false)
-    private BigDecimal taxRate; // Örn: 0.20 (Yani %20)
+    private BigDecimal taxRate;
 
     @Column(name = "tax_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal taxAmount;
@@ -45,8 +44,8 @@ public class Invoice {
     private LocalDateTime paymentDate;
 
     @Column(name = "payment_method", length = 50)
-    private String paymentMethod; // Örn: "CREDIT_CARD", "TRANSFER"
+    private String paymentMethod;
 
     @Column(name = "status", length = 50, nullable = false)
-    private String status; // Örn: "PAID", "PENDING", "FAILED"
+    private String status;
 }

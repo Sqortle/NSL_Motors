@@ -20,15 +20,15 @@ public class Order {
     @Column(name = "order_number", length = 8, unique = true, nullable = false)
     private String orderNumber;
 
-    // İlişki 1: Müşteri (Many-to-One)
+    // İlişki 1: Müşteri (Many-to-One) - Customer Entity'sine ba?l?
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private User customer;
+    private Customer customer;
 
-    // İlişki 2: Teknisyen/Vendor (Many-to-One) - Randevu için
+    // İlişki 2: Atanan Teknisyen/Çalışan (Many-to-One) - Employee Entity'sine ba?l?
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "technician_id")
-    private User technician;
+    private Employee technician;
 
     // İlişki 3: Araba Modeli (Many-to-One)
     @ManyToOne(fetch = FetchType.EAGER)
@@ -36,19 +36,18 @@ public class Order {
     private CarModel carModel;
 
     @Column(name = "stage_selected", length = 50, nullable = false)
-    private String stageSelected; // Örn: "STAGE1" veya "STAGE2"
+    private String stageSelected;
 
     @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate; // Siparişin oluşturulma tarihi
+    private LocalDateTime orderDate;
 
-    // Randevu Tarihini ayrı tutalım (Müşteri senaryosuna uygun)
     @Column(name = "appointment_date")
     private LocalDateTime appointmentDate;
 
     @Column(name = "status", length = 50, nullable = false)
-    private String status; // Örn: "PENDING", "COMPLETED", "CANCELED"
+    private String status;
 
-    // İlişki: One-to-One (Bu siparişin faturası)
+    // İlişki: One-to-One (Fatura)
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Invoice invoice;
 }

@@ -17,10 +17,10 @@ public class CarModel {
     private Long id;
 
     @Column(name = "make", length = 100, nullable = false)
-    private String make; // Marka
+    private String make;
 
     @Column(name = "model", length = 100, nullable = false)
-    private String model; // Model
+    private String model;
 
     @Column(name = "year")
     private Integer year;
@@ -35,11 +35,8 @@ public class CarModel {
     private Integer stage2Hp;
 
     @Column(name = "stage3_hp")
-    private Integer stage3Hp; // Eklenen Stage 3 için
+    private Integer stage3Hp;
 
     @Column(name = "car_image_url")
     private String carImageUrl;
-
-    // Not: Bu entity'den Orders'a Many-to-One ilişkisi olacak,
-    // ancak burada ters ilişkiyi (mappedBy) tanımlamaya gerek yok.
 }
