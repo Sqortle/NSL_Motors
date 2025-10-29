@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories; // Gerekli import
 
 @SpringBootApplication
-@EntityScan("com.ims.nslmotors.entities") // Not: Ben entity paketini "model" olarak varsaydım
+@EntityScan("com.ims.nslmotors.model") // Not: Ben entity paketini "model" olarak varsaydım
 @ComponentScan(basePackages = "com.ims.nslmotors")
 @EnableJpaRepositories("com.ims.nslmotors.repository") // Repository paketini açıkça belirt
 public class NslMotorsApplication {
