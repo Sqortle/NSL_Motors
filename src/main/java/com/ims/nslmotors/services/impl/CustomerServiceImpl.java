@@ -2,11 +2,12 @@ package com.ims.nslmotors.services.impl;
 
 import com.ims.nslmotors.dto.DtoCustomer;
 import com.ims.nslmotors.dto.DtoCustomerIU; // Yeni import
-import com.ims.nslmotors.entities.Customer;
+import com.ims.nslmotors.model.Customer;
 import com.ims.nslmotors.repository.CustomerRepository;
 import com.ims.nslmotors.services.ICustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements ICustomerService {
 
-    private final CustomerRepository customerRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Override
     public List<DtoCustomer> getAllCustomers() {

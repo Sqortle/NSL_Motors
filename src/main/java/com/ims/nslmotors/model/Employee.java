@@ -1,4 +1,4 @@
-package com.ims.nslmotors.entities;
+package com.ims.nslmotors.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
