@@ -17,7 +17,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_number", length = 8, unique = true, nullable = false)
+    @Column(name = "order_number", length = 12, unique = true, nullable = false)
     private String orderNumber;
 
     // İlişki 1: Müşteri (Many-to-One) - Customer Entity'sine ba?l?

@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class AdminAdminEmployeeServiceImpl implements IAdminEmployeeService {
+public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
 
     @Autowired
     private AdminEmployeeRepository adminEmployeeRepository;

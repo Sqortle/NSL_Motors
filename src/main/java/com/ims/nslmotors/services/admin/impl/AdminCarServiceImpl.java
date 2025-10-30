@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminAdminCarServiceImpl implements IAdminCarService {
+public class AdminCarServiceImpl implements IAdminCarService {
 
     private final AdminCarRepository adminCarRepository;
 
