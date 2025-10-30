@@ -165,7 +165,7 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
         // 4. Invoice Alanlar?n? Doldur
         invoice.setOrder(order);
         invoice.setInvoiceDate(LocalDateTime.now());
-        invoice.setPaymentDate(null); // Ödeme daha yapılmadığı için null
+        invoice.setPaymentDate(LocalDateTime.now()); // Ödeme daha yapılmadığı için null
 
         invoice.setSubtotalAmount(subtotalAmount);
         invoice.setTaxRate(TAX_RATE);
