@@ -1,13 +1,11 @@
-package com.ims.nslmotors.services.impl;
+package com.ims.nslmotors.services.admin.impl;
 
-import com.ims.nslmotors.dto.DtoCustomer;
-import com.ims.nslmotors.dto.DtoCustomer;
-import com.ims.nslmotors.dto.DtoCustomerIU;
+import com.ims.nslmotors.dto.admin.DtoAdminCustomer;
+import com.ims.nslmotors.dto.admin.DtoAdminCustomerIU;
 import com.ims.nslmotors.model.Customer;
-import com.ims.nslmotors.repository.CustomerRepository;
-import com.ims.nslmotors.services.ICustomerService;
+import com.ims.nslmotors.repository.admin.AdminCustomerRepository;
+import com.ims.nslmotors.services.admin.IAdminCustomerService;
 import jakarta.persistence.criteria.Predicate; // Dinamik filtreleme i?in
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,44 +19,44 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerServiceImpl implements ICustomerService {
+public class AdminAdminCustomerServiceImpl implements IAdminCustomerService {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private AdminCustomerRepository adminCustomerRepository;
 
     @Override
-    public Page<DtoCustomer> getCustomersWithPaginationAndSearch(DtoCustomer dtoCustomer, Pageable pageable) {
+    public Page<DtoAdminCustomer> getCustomersWithPaginationAndSearch(DtoAdminCustomer dtoAdminCustomer, Pageable pageable) {
 
-        Specification<Customer> specification = buildSpecification(dtoCustomer);
+        Specification<Customer> specification = buildSpecification(dtoAdminCustomer);
 
-        Page<Customer> customerPage = customerRepository.findAll(specification, pageable);
+        Page<Customer> customerPage = adminCustomerRepository.findAll(specification, pageable);
 
         return customerPage.map(this::convertToDto);
     }
 
-    private Specification<Customer> buildSpecification(DtoCustomer dtoCustomer) {
+    private Specification<Customer> buildSpecification(DtoAdminCustomer dtoAdminCustomer) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (dtoCustomer.getId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("id"), dtoCustomer.getId()));
+            if (dtoAdminCustomer.getId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("id"), dtoAdminCustomer.getId()));
             }
 
-            if (dtoCustomer.getFirstName() != null && !dtoCustomer.getFirstName().trim().isEmpty()) {
+            if (dtoAdminCustomer.getFirstName() != null && !dtoAdminCustomer.getFirstName().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")),
-                        "%" + dtoCustomer.getFirstName().toLowerCase() + "%"));
+                        "%" + dtoAdminCustomer.getFirstName().toLowerCase() + "%"));
             }
-            if (dtoCustomer.getLastName() != null && !dtoCustomer.getLastName().trim().isEmpty()) {
+            if (dtoAdminCustomer.getLastName() != null && !dtoAdminCustomer.getLastName().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")),
-                        "%" + dtoCustomer.getLastName().toLowerCase() + "%"));
+                        "%" + dtoAdminCustomer.getLastName().toLowerCase() + "%"));
             }
-            if (dtoCustomer.getEmail() != null && !dtoCustomer.getEmail().trim().isEmpty()) {
+            if (dtoAdminCustomer.getEmail() != null && !dtoAdminCustomer.getEmail().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
-                        "%" + dtoCustomer.getEmail().toLowerCase() + "%"));
+                        "%" + dtoAdminCustomer.getEmail().toLowerCase() + "%"));
             }
-            if (dtoCustomer.getPhoneNumber() != null && !dtoCustomer.getPhoneNumber().trim().isEmpty()) {
+            if (dtoAdminCustomer.getPhoneNumber() != null && !dtoAdminCustomer.getPhoneNumber().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("phoneNumber"),
-                        "%" + dtoCustomer.getPhoneNumber() + "%"));
+                        "%" + dtoAdminCustomer.getPhoneNumber() + "%"));
             }
 
             // T?m ko?ullar? AND ile birle?tir
@@ -68,7 +66,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
     // YENİ: Müşteri oluşturma mantığı (CRUD: CREATE)
     @Override
-    public DtoCustomer createCustomer(DtoCustomerIU customerCreationDto) {
+    public DtoAdminCustomer createCustomer(DtoAdminCustomerIU customerCreationDto) {
         // 1. DTO'dan Entity'ye dönüştür
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerCreationDto, customer);
@@ -77,14 +75,14 @@ public class CustomerServiceImpl implements ICustomerService {
         // Şu an Security'yi atladığımız için düz metin kaydediyoruz.
 
         // 2. Entity'yi veritabanına kaydet
-        Customer savedCustomer = customerRepository.save(customer);
+        Customer savedCustomer = adminCustomerRepository.save(customer);
 
         // 3. Kaydedilen Entity'yi Response DTO'ya dönüştür ve döndür
         return convertToDto(savedCustomer);
     }
 
     @Override
-    public List<DtoCustomer> createCustomersBulk(List<DtoCustomerIU> customerCreationDtos) {
+    public List<DtoAdminCustomer> createCustomersBulk(List<DtoAdminCustomerIU> customerCreationDtos) {
         // 1. DTO Listesinden Entity Listesine dönüşüm
         List<Customer> customersToSave = customerCreationDtos.stream()
                 .map(dto -> {
@@ -97,7 +95,7 @@ public class CustomerServiceImpl implements ICustomerService {
                 .collect(Collectors.toList());
 
         // 2. Entity Listesini JPA'nın saveAll metodu ile toplu kaydet
-        List<Customer> savedCustomers = customerRepository.saveAll(customersToSave);
+        List<Customer> savedCustomers = adminCustomerRepository.saveAll(customersToSave);
 
         // 3. Kaydedilen Entity Listesini Response DTO Listesine dönüştür
         return savedCustomers.stream()
@@ -105,8 +103,8 @@ public class CustomerServiceImpl implements ICustomerService {
                 .collect(Collectors.toList());
     }
 
-    public DtoCustomer updateCustomer(Long id, DtoCustomerIU updateDto){
-        Customer existingCustomer = customerRepository.findById(id).orElse(null);//BURADA EXCEPTION GEÇMEDİM GGÖZDEN KAÇMASIN
+    public DtoAdminCustomer updateCustomer(Long id, DtoAdminCustomerIU updateDto){
+        Customer existingCustomer = adminCustomerRepository.findById(id).orElse(null);//BURADA EXCEPTION GEÇMEDİM GGÖZDEN KAÇMASIN
 
         String oldPassword = existingCustomer.getPassword();
         BeanUtils.copyProperties(updateDto, existingCustomer);
@@ -115,14 +113,14 @@ public class CustomerServiceImpl implements ICustomerService {
             existingCustomer.setPassword(oldPassword);
         }
 
-        Customer updatedCustomer = customerRepository.save(existingCustomer);
+        Customer updatedCustomer = adminCustomerRepository.save(existingCustomer);
 
         return convertToDto(updatedCustomer);
 
     }
 
     public void deleteCustomer(Long id){
-        if (!customerRepository.existsById(id)) {
+        if (!adminCustomerRepository.existsById(id)) {
             // Var olmayan bir ID silinmeye çalışılırsa hata fırlat
             throw new NoSuchElementException("ID " + id + " ile müşteri bulunamadığı için silinemedi.");
         }
@@ -130,13 +128,13 @@ public class CustomerServiceImpl implements ICustomerService {
         // 2. Silme işlemini gerçekleştir
         // NOT: Customer Entity'nizde Order Entity'sine olan ilişki (cascade = CascadeType.ALL, orphanRemoval = true)
         // olduğu için, bu müşteriye ait tüm siparişler de otomatik olarak silinecektir.
-        customerRepository.deleteById(id);
+        adminCustomerRepository.deleteById(id);
     }
 
 
 
-    private DtoCustomer convertToDto(Customer customer) {
-        DtoCustomer dto = new DtoCustomer();
+    private DtoAdminCustomer convertToDto(Customer customer) {
+        DtoAdminCustomer dto = new DtoAdminCustomer();
         BeanUtils.copyProperties(customer, dto);
         return dto;
     }

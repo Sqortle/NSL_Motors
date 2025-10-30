@@ -1,9 +1,9 @@
-package com.ims.nslmotors.controller.impl;
+package com.ims.nslmotors.controller.admin.impl;
 
-import com.ims.nslmotors.controller.ICustomerController;
-import com.ims.nslmotors.dto.DtoCustomer;
-import com.ims.nslmotors.dto.DtoCustomerIU; // Yeni import
-import com.ims.nslmotors.services.ICustomerService;
+import com.ims.nslmotors.controller.admin.IAdminCustomerController;
+import com.ims.nslmotors.dto.admin.DtoAdminCustomer;
+import com.ims.nslmotors.dto.admin.DtoAdminCustomerIU; // Yeni import
+import com.ims.nslmotors.services.admin.IAdminCustomerService;
 import jakarta.validation.Valid; // Validation'lar? ?al??t?rmak i?in
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +18,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/customers") // Yolu /api/admin/customers olarak d?zenledik
 @RequiredArgsConstructor
-public class CustomerControllerImpl implements ICustomerController {
+public class AdminCustomerControllerImpl implements IAdminCustomerController {
 
     @Autowired
-    private ICustomerService customerService;
+    private IAdminCustomerService customerService;
 
     @Override
     @GetMapping("/list")
-    public ResponseEntity<Page<DtoCustomer>> getCustomers(
+    public ResponseEntity<Page<DtoAdminCustomer>> getCustomers(
             // Tüm arama filtrelerini alır (firstName, email, vb.)
-            @ModelAttribute DtoCustomer dtoCustomer,
+            @ModelAttribute DtoAdminCustomer dtoAdminCustomer,
             // page, size, sort parametrelerini otomatik doldurur
             Pageable pageable) {
 
-        Page<DtoCustomer> customerPage = customerService.getCustomersWithPaginationAndSearch(dtoCustomer, pageable);
+        Page<DtoAdminCustomer> customerPage = customerService.getCustomersWithPaginationAndSearch(dtoAdminCustomer, pageable);
 
         return ResponseEntity.ok(customerPage); // HTTP 200 OK
     }
@@ -39,19 +39,19 @@ public class CustomerControllerImpl implements ICustomerController {
     @Override
     @PostMapping("/add")
     // @Valid: DTO'daki validation kurallarını (NotBlank, Email, Size) aktif eder.
-    public ResponseEntity<DtoCustomer> createCustomer(@Valid @RequestBody DtoCustomerIU customerCreationDto) {
-        DtoCustomer createdCustomer = customerService.createCustomer(customerCreationDto);
+    public ResponseEntity<DtoAdminCustomer> createCustomer(@Valid @RequestBody DtoAdminCustomerIU customerCreationDto) {
+        DtoAdminCustomer createdCustomer = customerService.createCustomer(customerCreationDto);
         // Yeni bir kaynak oluşturulduğunda HTTP 201 Created döndürülür.
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
 
     @Override
     @PostMapping("/bulk") // Yolu: /api/admin/customers/bulk
-    public ResponseEntity<List<DtoCustomer>> createCustomersBulk(
+    public ResponseEntity<List<DtoAdminCustomer>> createCustomersBulk(
             // @RequestBody: JSON dizisini otomatik List<DtoCustomerIU>'ya dönüştürür
-            @Valid @RequestBody List<DtoCustomerIU> customerList) {
+            @Valid @RequestBody List<DtoAdminCustomerIU> customerList) {
 
-        List<DtoCustomer> createdList = customerService.createCustomersBulk(customerList);
+        List<DtoAdminCustomer> createdList = customerService.createCustomersBulk(customerList);
 
         // Toplu işlemde de HTTP 201 Created döndürülür.
         return new ResponseEntity<>(createdList, HttpStatus.CREATED);
@@ -59,9 +59,9 @@ public class CustomerControllerImpl implements ICustomerController {
 
     @Override
     @PutMapping("update/{id}")
-    public ResponseEntity<DtoCustomer> updateCustomer(@PathVariable Long id, @Valid @RequestBody DtoCustomerIU updateDto){
+    public ResponseEntity<DtoAdminCustomer> updateCustomer(@PathVariable Long id, @Valid @RequestBody DtoAdminCustomerIU updateDto){
 
-        DtoCustomer updatedCustomer = customerService.updateCustomer(id, updateDto);
+        DtoAdminCustomer updatedCustomer = customerService.updateCustomer(id, updateDto);
         return ResponseEntity.ok(updatedCustomer);
     }
 

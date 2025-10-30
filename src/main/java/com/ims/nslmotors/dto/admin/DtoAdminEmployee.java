@@ -1,13 +1,9 @@
-package com.ims.nslmotors.dto;
+package com.ims.nslmotors.dto.admin;
 
-import com.ims.nslmotors.model.Order;
-import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class DtoEmployee {
+public class DtoAdminEmployee {
 
     private Long id;
     private String role;

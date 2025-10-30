@@ -33,7 +33,7 @@ public class Order {
     // İlişki 3: Araba Modeli (Many-to-One)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "model_id", nullable = false)
-    private CarModel carModel;
+    private Car carModel;
 
     @Column(name = "stage_selected", length = 50, nullable = false)
     private String stageSelected;

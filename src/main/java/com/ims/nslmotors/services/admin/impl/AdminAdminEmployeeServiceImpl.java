@@ -1,11 +1,10 @@
-package com.ims.nslmotors.services.impl;
+package com.ims.nslmotors.services.admin.impl;
 
-import com.ims.nslmotors.dto.DtoEmployee;
-import com.ims.nslmotors.dto.DtoEmployeeIU;
-import com.ims.nslmotors.model.Customer;
+import com.ims.nslmotors.dto.admin.DtoAdminEmployee;
+import com.ims.nslmotors.dto.admin.DtoAdminEmployeeIU;
 import com.ims.nslmotors.model.Employee;
-import com.ims.nslmotors.repository.EmployeeRepository;
-import com.ims.nslmotors.services.IEmployeeService;
+import com.ims.nslmotors.repository.admin.AdminEmployeeRepository;
+import com.ims.nslmotors.services.admin.IAdminEmployeeService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,55 +19,55 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class EmployeeServiceImpl implements IEmployeeService {
+public class AdminAdminEmployeeServiceImpl implements IAdminEmployeeService {
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private AdminEmployeeRepository adminEmployeeRepository;
 
     @Override
-    public Page<DtoEmployee> getEmployeesWithPaginationAndSearch(DtoEmployee dtoEmployee, Pageable pageable) {
-        Specification<Employee> specification = buildSpecification(dtoEmployee);
+    public Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable) {
+        Specification<Employee> specification = buildSpecification(dtoAdminEmployee);
 
-        Page<Employee> customerPage = employeeRepository.findAll(specification, pageable);
+        Page<Employee> customerPage = adminEmployeeRepository.findAll(specification, pageable);
 
         return customerPage.map(this::convertToDto);
     }
 
-    private Specification<Employee> buildSpecification(DtoEmployee dtoEmployee) {
+    private Specification<Employee> buildSpecification(DtoAdminEmployee dtoAdminEmployee) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (dtoEmployee.getId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("id"), dtoEmployee.getId()));
+            if (dtoAdminEmployee.getId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("id"), dtoAdminEmployee.getId()));
             }
 
-            if (dtoEmployee.getFirstName() != null && !dtoEmployee.getFirstName().trim().isEmpty()) {
+            if (dtoAdminEmployee.getFirstName() != null && !dtoAdminEmployee.getFirstName().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")),
-                        "%" + dtoEmployee.getFirstName().toLowerCase() + "%"));
+                        "%" + dtoAdminEmployee.getFirstName().toLowerCase() + "%"));
             }
-            if (dtoEmployee.getLastName() != null && !dtoEmployee.getLastName().trim().isEmpty()) {
+            if (dtoAdminEmployee.getLastName() != null && !dtoAdminEmployee.getLastName().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")),
-                        "%" + dtoEmployee.getLastName().toLowerCase() + "%"));
+                        "%" + dtoAdminEmployee.getLastName().toLowerCase() + "%"));
             }
-            if (dtoEmployee.getEmail() != null && !dtoEmployee.getEmail().trim().isEmpty()) {
+            if (dtoAdminEmployee.getEmail() != null && !dtoAdminEmployee.getEmail().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
-                        "%" + dtoEmployee.getEmail().toLowerCase() + "%"));
+                        "%" + dtoAdminEmployee.getEmail().toLowerCase() + "%"));
             }
-            if (dtoEmployee.getPhoneNumber() != null && !dtoEmployee.getPhoneNumber().trim().isEmpty()) {
+            if (dtoAdminEmployee.getPhoneNumber() != null && !dtoAdminEmployee.getPhoneNumber().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("phoneNumber"),
-                        "%" + dtoEmployee.getPhoneNumber() + "%"));
+                        "%" + dtoAdminEmployee.getPhoneNumber() + "%"));
             }
-            if (dtoEmployee.getShopName() != null && !dtoEmployee.getShopName().trim().isEmpty()) {
+            if (dtoAdminEmployee.getShopName() != null && !dtoAdminEmployee.getShopName().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("shopName"),
-                        "%" + dtoEmployee.getShopName() + "%"));
+                        "%" + dtoAdminEmployee.getShopName() + "%"));
             }
-            if (dtoEmployee.getAddress() != null && !dtoEmployee.getAddress().trim().isEmpty()) {
+            if (dtoAdminEmployee.getAddress() != null && !dtoAdminEmployee.getAddress().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("address"),
-                        "%" + dtoEmployee.getAddress() + "%"));
+                        "%" + dtoAdminEmployee.getAddress() + "%"));
             }
-            if (dtoEmployee.getTcKimlikNo() != null && !dtoEmployee.getTcKimlikNo().trim().isEmpty()) {
+            if (dtoAdminEmployee.getTcKimlikNo() != null && !dtoAdminEmployee.getTcKimlikNo().trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("tcKimlikNo"),
-                        "%" + dtoEmployee.getTcKimlikNo() + "%"));
+                        "%" + dtoAdminEmployee.getTcKimlikNo() + "%"));
             }
 
             // T?m ko?ullar? AND ile birle?tir
@@ -77,15 +76,15 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     @Override
-    public DtoEmployee createEmployee(DtoEmployeeIU employeeCreationDto) {
+    public DtoAdminEmployee createEmployee(DtoAdminEmployeeIU employeeCreationDto) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeCreationDto, employee);
-        Employee savedEmployee = employeeRepository.save(employee);
+        Employee savedEmployee = adminEmployeeRepository.save(employee);
         return convertToDto(savedEmployee);
     }
 
     @Override
-    public List<DtoEmployee> createEmployeesBulk(List<DtoEmployeeIU> employeeCreationDtos) {
+    public List<DtoAdminEmployee> createEmployeesBulk(List<DtoAdminEmployeeIU> employeeCreationDtos) {
         List<Employee> employeesToSave = employeeCreationDtos.stream()
                 .map(dto -> {
                     Employee employee = new Employee();
@@ -97,7 +96,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
                 .collect(Collectors.toList());
 
         // 2. Entity Listesini JPA'nın saveAll metodu ile toplu kaydet
-        List<Employee> savedEmployees = employeeRepository.saveAll(employeesToSave);
+        List<Employee> savedEmployees = adminEmployeeRepository.saveAll(employeesToSave);
 
         // 3. Kaydedilen Entity Listesini Response DTO Listesine dönüştür
         return savedEmployees.stream()
@@ -106,8 +105,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     @Override
-    public DtoEmployee updateEmployee(Long id, DtoEmployeeIU updateDto) {
-        Employee existingEmployee = employeeRepository.findById(id).orElse(null);
+    public DtoAdminEmployee updateEmployee(Long id, DtoAdminEmployeeIU updateDto) {
+        Employee existingEmployee = adminEmployeeRepository.findById(id).orElse(null);
         String oldPassword = existingEmployee.getPassword();
 
         BeanUtils.copyProperties(updateDto, existingEmployee);
@@ -116,13 +115,13 @@ public class EmployeeServiceImpl implements IEmployeeService {
             existingEmployee.setPassword(oldPassword);
         }
 
-        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        Employee updatedEmployee = adminEmployeeRepository.save(existingEmployee);
         return convertToDto(updatedEmployee);
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        if (!employeeRepository.existsById(id)) {
+        if (!adminEmployeeRepository.existsById(id)) {
             // Var olmayan bir ID silinmeye çalışılırsa hata fırlat
             throw new NoSuchElementException("ID " + id + " ile müşteri bulunamadığı için silinemedi.");
         }
@@ -130,11 +129,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
         // 2. Silme işlemini gerçekleştir
         // NOT: Customer Entity'nizde Order Entity'sine olan ilişki (cascade = CascadeType.ALL, orphanRemoval = true)
         // olduğu için, bu müşteriye ait tüm siparişler de otomatik olarak silinecektir.
-        employeeRepository.deleteById(id);
+        adminEmployeeRepository.deleteById(id);
     }
 
-    private DtoEmployee convertToDto(Employee employee) {
-        DtoEmployee dto = new DtoEmployee();
+    private DtoAdminEmployee convertToDto(Employee employee) {
+        DtoAdminEmployee dto = new DtoAdminEmployee();
         BeanUtils.copyProperties(employee, dto);
         return dto;
     }

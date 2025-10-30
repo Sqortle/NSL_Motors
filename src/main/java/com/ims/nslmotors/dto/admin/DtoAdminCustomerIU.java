@@ -1,11 +1,11 @@
-package com.ims.nslmotors.dto;
+package com.ims.nslmotors.dto.admin;
 
 import jakarta.validation.constraints.*; // Validation k?t?phanesi import edildi
 import lombok.Data;
 
 // DTO: Customer Girdi/G?ncelleme (Input/Update)
 @Data
-public class DtoCustomerIU {
+public class DtoAdminCustomerIU {
 
     // ID, sadece g?ncelleme (Update) senaryosunda kullan?labilir
     private Long id;

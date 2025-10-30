@@ -1,9 +1,9 @@
-package com.ims.nslmotors.dto;
+package com.ims.nslmotors.dto.admin;
 
 import lombok.Data;
 
 @Data
-public class DtoCustomer {
+public class DtoAdminCustomer {
 
     private Long id;
     private String firstName;

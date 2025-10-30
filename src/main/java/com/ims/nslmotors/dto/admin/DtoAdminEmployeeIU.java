@@ -1,4 +1,4 @@
-package com.ims.nslmotors.dto;
+package com.ims.nslmotors.dto.admin;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class DtoEmployeeIU {
+public class DtoAdminEmployeeIU {
 
     private Long id;
 
