@@ -13,13 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Invoice {
-
-    // PRIMARY KEY ve FOREIGN KEY olarak Orders tablosuna ba?lan?r
+    // PK ve FK olarak Order ID'sini kullan?r
     @Id
     @Column(name = "order_id")
     private Long id;
 
-    // İlişki: One-to-One (Orders tablosuna ba?lan?r)
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId // Order'?n ID'sini PK ve FK olarak kullan?r.
     @JoinColumn(name = "order_id")
@@ -28,24 +26,27 @@ public class Invoice {
     @Column(name = "invoice_date", nullable = false)
     private LocalDateTime invoiceDate;
 
+    // Subtotal Amount (Hesaplanacak)
     @Column(name = "subtotal_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal subtotalAmount;
 
+    // Tax Rate (%20 statik olacak ama DB'de tutulur)
     @Column(name = "tax_rate", precision = 4, scale = 2, nullable = false)
     private BigDecimal taxRate;
 
     @Column(name = "tax_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal taxAmount;
 
+    // Total Amount
     @Column(name = "total_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
     @Column(name = "payment_date")
-    private LocalDateTime paymentDate;
+    private LocalDateTime paymentDate; // PaymentDate null olabilir (ödeme sonra yap?l?rsa)
 
-    @Column(name = "payment_method", length = 50)
+    @Column(name = "payment_method", length = 50, nullable = false) // ?lk de?eri CreditCard olaca?? i?in nullable=false kals?n
     private String paymentMethod;
 
-    @Column(name = "status", length = 50, nullable = false)
+    @Column(name = "status", length = 50, nullable = false) // ?lk de?eri PENDING olaca?? i?in nullable=false kals?n
     private String status;
 }

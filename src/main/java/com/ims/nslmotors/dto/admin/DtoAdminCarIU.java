@@ -3,6 +3,7 @@ package com.ims.nslmotors.dto.admin;
 import lombok.Data;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 public class DtoAdminCarIU implements Serializable {
@@ -27,5 +28,16 @@ public class DtoAdminCarIU implements Serializable {
     private Integer stage2Hp;
     private Integer stage3Hp;
 
-    private String carImageUrl;
-}
+    @NotNull(message = "Stage 1 fiyatı zorunludur.")
+    @DecimalMin(value = "0.00", message = "Fiyat negatif olamaz.")
+    private BigDecimal stage1Price;
+
+    @NotNull(message = "Stage 2 fiyatı zorunludur.")
+    @DecimalMin(value = "0.00", message = "Fiyat negatif olamaz.")
+    private BigDecimal stage2Price;
+
+    @NotNull(message = "Stage 3 fiyatı zorunludur.")
+    @DecimalMin(value = "0.00", message = "Fiyat negatif olamaz.")
+    private BigDecimal stage3Price;
+
+    private String carImageUrl;}

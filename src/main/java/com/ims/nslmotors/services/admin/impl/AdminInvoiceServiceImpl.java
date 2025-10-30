@@ -1,9 +1,7 @@
 package com.ims.nslmotors.services.admin.impl;
 
 import com.ims.nslmotors.dto.admin.DtoAdminInvoice;
-import com.ims.nslmotors.dto.admin.DtoAdminInvoiceIU;
 import com.ims.nslmotors.model.Invoice;
-import com.ims.nslmotors.model.Order;
 import com.ims.nslmotors.repository.admin.AdminInvoiceRepository;
 import com.ims.nslmotors.repository.admin.AdminOrderRepository; // Order'a erişim için
 import com.ims.nslmotors.services.admin.IAdminInvoiceService;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor

@@ -102,6 +102,9 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
     }
 
     // --- CRUD: CREATE (Tekil) ---
+    private static final BigDecimal TAX_RATE = new BigDecimal("0.20"); // %20 KDV
+
+    // --- CRUD: CREATE (Tekil) ---
     @Override
     public DtoAdminOrder createOrder(DtoAdminOrderIU orderCreationDto) {
 
@@ -123,15 +126,19 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
         BeanUtils.copyProperties(orderCreationDto, order, "id"); // ID hariç kopyala
 
         order.setOrderNumber(generateUniqueOrderNumber()); // Otomatik benzersiz numara ata
+
+        // KRİTİK EKSİKLER BURAYA EKLENMELİDİR:
         order.setCustomer(customer);
         order.setCarModel(carModel);
         order.setTechnician(technician);
+        // KRİTİK EKSİKLER SONU
+
         order.setOrderDate(LocalDateTime.now());
 
-        // 3. FATURA ENTITY'SİNİ OLUŞTUR VE ZİNCİRİ KUR (KRİTİK ÇÖZÜM)
-        Invoice invoice = createDefaultInvoice(order);
+        // 3. FATURA ENTITY'SİNİ OTOMATİK OLUŞTUR ve HESAPLA (KRİTİK ÇÖZÜM)
+        Invoice invoice = createCalculatedInvoice(order, carModel);
 
-        // Faturayı Siparişe Ekle (Bu, CascadeType.ALL sayesinde Faturanın kaydedilmesini sağlar)
+        // Faturay? Sipari?e Ekle (Cascade ?al??t?r?l?r)
         order.setInvoice(invoice);
 
         // 4. SADECE Siparişi Kaydet (Invoice otomatik olarak kaydedilir)
@@ -139,31 +146,53 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
 
         return convertToDto(savedOrder);
     }
-
-    private Invoice createDefaultInvoice(Order order) {
+    /**
+     * Fatura de?erlerini hesaplar ve Invoice Entity'sini olu?turur.
+     * Bu metot, Order Entity'si kaydedilmeden hemen ?nce ?al??mal?d?r.
+     */
+    private Invoice createCalculatedInvoice(Order order, Car carModel) {
         Invoice invoice = new Invoice();
 
-        // Fatura ve Sipari?in ID'si ayn? olmal? (Çünkü @MapsId kullan?l?yor)
-        // Ancak ID, Order kaydedildikten sonra DB taraf?ndan ?retildi?i i?in,
-        // Order'in ID'sini almak yerine, ?imdilik s?f?r b?rak?p yaln?zca Order objesini set edece?iz.
-        // Hibernate save s?ras?nda bunu d?zeltecektir.
+        // 1. Alt Toplamı (SubtotalAmount) Hesapla
+        BigDecimal subtotalAmount = calculatePriceByStage(order.getStageSelected(), carModel);
 
-        // Önemli: Invoice.id'nin ?retimini hibernate'e b?rak?yoruz.
+        // 2. Vergiyi Hesapla
+        BigDecimal taxAmount = subtotalAmount.multiply(TAX_RATE);
 
+        // 3. Toplamı Hesapla
+        BigDecimal totalAmount = subtotalAmount.add(taxAmount);
+
+        // 4. Invoice Alanlar?n? Doldur
         invoice.setOrder(order);
         invoice.setInvoiceDate(LocalDateTime.now());
+        invoice.setPaymentDate(null); // Ödeme daha yapılmadığı için null
 
-        // Varsayılan Muhasebe Değerleri (Sıfır olarak başlatılır)
-        invoice.setSubtotalAmount(BigDecimal.ZERO);
-        invoice.setTaxRate(new BigDecimal("0.00")); // %0 Vergi
-        invoice.setTaxAmount(BigDecimal.ZERO);
-        invoice.setTotalAmount(BigDecimal.ZERO);
+        invoice.setSubtotalAmount(subtotalAmount);
+        invoice.setTaxRate(TAX_RATE);
+        invoice.setTaxAmount(taxAmount);
+        invoice.setTotalAmount(totalAmount);
 
-        // Diğer alanlar
-        invoice.setPaymentMethod("UNPAID");
-        invoice.setStatus("PENDING");
+        // Statik Değerler
+        invoice.setPaymentMethod("CreditCard"); // Statik de?er atamas?
+        invoice.setStatus("PENDING");         // ?lk durum atamas?
 
         return invoice;
+    }
+
+    /**
+     * Seçilen Stage'e göre Car Entity'sindeki fiyat? döndürür.
+     */
+    private BigDecimal calculatePriceByStage(String stage, Car carModel) {
+        switch (stage.toUpperCase()) {
+            case "STAGE1":
+                return carModel.getStage1Price();
+            case "STAGE2":
+                return carModel.getStage2Price();
+            case "STAGE3":
+                return carModel.getStage3Price();
+            default:
+                throw new IllegalArgumentException("Geçersiz stage seçimi: " + stage);
+        }
     }
 
     // --- CRUD: UPDATE ---
