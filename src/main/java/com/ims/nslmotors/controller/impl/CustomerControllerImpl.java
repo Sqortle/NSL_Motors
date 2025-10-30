@@ -45,6 +45,7 @@ public class CustomerControllerImpl implements ICustomerController {
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
 
+    @Override
     @PostMapping("/bulk") // Yolu: /api/admin/customers/bulk
     public ResponseEntity<List<DtoCustomer>> createCustomersBulk(
             // @RequestBody: JSON dizisini otomatik List<DtoCustomerIU>'ya dönüştürür
