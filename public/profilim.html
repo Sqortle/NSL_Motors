@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - NSL MOTORS</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="background-effects"></div>
+
+    <header class="navbar glass-card">
+        <div class="logo">NSL MOTORS</div>
+        
+        <div class="nav-right-group">
+            <nav class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="iletisim.html">İletişim</a> 
+            </nav>
+            <div class="contact">
+                <a href="profilim.html" id="profile-link" class="contact-btn active-btn-override">Profilim</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 900px; padding-top: 50px;">
+        
+        <h1 class="section-title glass-text" style="text-align: center; margin-bottom: 50px;">Hesabım ve Tuning Randevularım</h1>
+
+        <div class="profile-tabs-container glass-card" style="padding: 20px;">
+            
+            <div class="tabs-nav" style="display: flex; border-bottom: 1px solid var(--glass-border); margin-bottom: 20px;">
+                <button class="tab-btn active" onclick="openTab(event, 'appointments')" style="background: none; border: none; padding: 15px 25px; cursor: pointer; color: var(--secondary-accent); font-weight: bold; border-bottom: 3px solid var(--main-accent);">Randevularım</button>
+                <button class="tab-btn" onclick="openTab(event, 'account')" style="background: none; border: none; padding: 15px 25px; cursor: pointer; color: rgba(255, 255, 255, 0.7); font-weight: bold; border-bottom: 3px solid transparent;">Hesap Bilgileri</button>
+            </div>
+            
+            <div id="appointments" class="tab-content" style="display: block; padding: 10px;">
+                <h3 class="glass-text" style="margin-bottom: 25px; font-size: 1.5em;">Yaklaşan ve Tamamlanmış İşlemler</h3>
+                <div class="appointment-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    
+                    <div class="appointment-card glass-card-nested" style="padding: 20px; border-left: 5px solid orange; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-text-content">
+                            <h4 class="glass-text" style="margin-bottom: 5px;">Nissan GT-R R35 - Stage 2 Tuning</h4>
+                            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">Tarih: 15 Aralık 2025 | Saat: 10:00</p>
+                            <p class="status pending" style="color: orange; font-weight: bold;">Durum: Beklemede (Onay bekleniyor)</p>
+                        </div>
+                        <button class="btn secondary-btn glass-card small-btn" style="min-width: 120px;">Randevuyu Düzenle</button>
+                    </div>
+                    
+                    <div class="appointment-card glass-card-nested" style="padding: 20px; border-left: 5px solid gray; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-text-content">
+                            <h4 class="glass-text" style="margin-bottom: 5px;">BMW M4 G82 - Stage 1 Tuning</h4>
+                            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">Tarih: 01 Kasım 2025 | Saat: 14:30</p>
+                            <p class="status completed" style="color: lightgray; font-weight: bold;">Durum: Tamamlandı</p>
+                        </div>
+                        <button class="btn secondary-btn glass-card small-btn" style="min-width: 120px;">Fatura Görüntüle</button>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div id="account" class="tab-content" style="display: none; padding: 10px;">
+                <h3 class="glass-text" style="margin-bottom: 25px; font-size: 1.5em;">Hesap Bilgilerini Güncelle</h3>
+                <form class="glass-form">
+                    <div class="form-group"><label for="p-name">Ad Soyad</label><input type="text" id="p-name" class="glass-input" value="Ayşe Yılmaz" required></div>
+                    <div class="form-group"><label for="p-email">E-posta</label><input type="email" id="p-email" class="glass-input" value="ayse.yilmaz@mail.com" required></div>
+                    <div class="form-group"><label for="p-phone">Telefon</label><input type="text" id="p-phone" class="glass-input" value="+90 5XX XXX XX XX"></div>
+                    <div class="form-group"><label for="p-password">Şifre</label><input type="password" id="p-password" class="glass-input" placeholder="Yeni şifrenizi girmek için doldurun"></div>
+                    <button type="submit" class="btn primary-btn glass-card" style="margin-top: 10px;">Bilgileri Güncelle</button>
+                </form>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                // BRG vurgusunu kaldır
+                tablinks[i].style.borderBottom = '3px solid transparent';
+                tablinks[i].style.color = 'rgba(255, 255, 255, 0.7)';
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            // Aktif sekmeye BRG vurgusu ekle
+            evt.currentTarget.className += " active";
+            evt.currentTarget.style.borderBottom = '3px solid var(--main-accent)';
+            evt.currentTarget.style.color = 'var(--secondary-accent)';
+        }
+    </script>
+</body>
+</html>

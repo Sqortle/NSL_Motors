@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çalışan Paneli - NSL MOTORS</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="background-effects"></div>
+
+    <header class="navbar glass-card">
+        <div class="logo">NSL MOTORS</div>
+        
+        <div class="nav-right-group">
+            <nav class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="iletisim.html">İletişim</a> 
+            </nav>
+            <div class="contact">
+                <a href="employee_panel.html" id="employee-link" class="contact-btn active-btn-override">Çalışan Paneli</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 1400px; padding-top: 50px;">
+        
+        <h1 class="section-title glass-text" style="text-align: center; margin-bottom: 50px;">Teknisyen/Usta Randevu Yönetimi</h1>
+
+        <div class="appointment-filter-bar glass-card" style="margin-bottom: 30px; padding: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <input type="date" class="glass-input" style="width: 200px;">
+            <select class="glass-input" style="width: 150px;">
+                <option>Tüm Durumlar</option>
+                <option>Beklemede</option>
+                <option>Devam Ediyor</option>
+                <option>Tamamlandı</option>
+            </select>
+            <input type="text" class="glass-input" placeholder="Müşteri Adı veya Sipariş No..." style="flex-grow: 1;">
+            <button class="btn primary-btn glass-card small-btn" style="min-width: 80px;">Ara</button>
+        </div>
+
+        <div class="appointments-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+            
+            <div class="appointment-manage-card glass-card" style="padding: 30px; border-left: 5px solid var(--secondary-accent);">
+                <span class="status-badge pending" style="float: right; font-weight: bold; padding: 5px 10px; border-radius: 5px; background: rgba(255, 165, 0, 0.2); color: orange;">Beklemede</span>
+                <h3 class="glass-text" style="margin-bottom: 5px;">#20251101 - NISSAN GT-R (STAGE 3)</h3>
+                <p style="color: rgba(255, 255, 255, 0.6); margin-bottom: 20px; font-size: 0.9em;">Yüksek Turbos & Yakıt Sistemi Kurulumu</p>
+                
+                <div class="card-details" style="border-top: 1px dashed rgba(255, 255, 255, 0.15); padding-top: 15px;">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Müşteri:</strong> Ahmet Demir</p>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Tarih:</strong> 15.12.2025 - 10:00</p>
+                    <p style="color: var(--main-accent); font-weight: bold; margin-bottom: 15px;"><strong>Atanan:</strong> (Henüz atanmadı)</p>
+                    <p style="color: rgba(255, 255, 255, 0.5);">** Tahmini Fiyat: 35.000 €+ **</p>
+                </div>
+                
+                <div class="card-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn primary-btn glass-card" style="flex: 2;">Düzenle & Ata</button>
+                    <button class="btn secondary-btn glass-card" style="flex: 1;">Detaylar</button>
+                </div>
+            </div>
+            
+            <div class="appointment-manage-card glass-card" style="padding: 30px; border-left: 5px solid var(--main-accent);">
+                <span class="status-badge active" style="float: right; font-weight: bold; padding: 5px 10px; border-radius: 5px; background: rgba(0, 220, 0, 0.2); color: lightgreen;">Devam Ediyor</span>
+                <h3 class="glass-text" style="margin-bottom: 5px;">#20251025 - AUDI RS7 (STAGE 2)</h3>
+                <p style="color: rgba(255, 255, 255, 0.6); margin-bottom: 20px; font-size: 0.9em;">Spor Katalizör ve Yazılım Revizyonu</p>
+                
+                <div class="card-details" style="border-top: 1px dashed rgba(255, 255, 255, 0.15); padding-top: 15px;">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Müşteri:</strong> Zeynep Kaya</p>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Tarih:</strong> 20.12.2025 - 14:00</p>
+                    <p style="color: var(--secondary-accent); font-weight: bold; margin-bottom: 15px;"><strong>Atanan:</strong> Ali Usta</p>
+                    <p style="color: rgba(255, 255, 255, 0.5);">** Tahmini Fiyat: 18.000 € **</p>
+                </div>
+                
+                <div class="card-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn primary-btn glass-card" style="flex: 2;">Durumu Güncelle</button>
+                    <button class="btn secondary-btn glass-card" style="flex: 1;">Detaylar</button>
+                </div>
+            </div>
+            
+            <div class="appointment-manage-card glass-card" style="padding: 30px; border-left: 5px solid #666;">
+                <span class="status-badge completed" style="float: right; font-weight: bold; padding: 5px 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.1); color: #ccc;">Tamamlandı</span>
+                <h3 class="glass-text" style="margin-bottom: 5px;">#20250910 - BMW M4 (STAGE 1)</h3>
+                <p style="color: rgba(255, 255, 255, 0.6); margin-bottom: 20px; font-size: 0.9em;">ECU Optimizasyonu ve Filtre Değişimi</p>
+                
+                <div class="card-details" style="border-top: 1px dashed rgba(255, 255, 255, 0.15); padding-top: 15px;">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Müşteri:</strong> Murat Gül</p>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;"><strong>Tarih:</strong> 10.09.2025 - 09:00</p>
+                    <p style="color: #ccc; font-weight: bold; margin-bottom: 15px;"><strong>Atanan:</strong> Mehmet Usta</p>
+                    <p style="color: rgba(255, 255, 255, 0.5);">** Gerçekleşen Fiyat: 6.500 € **</p>
+                </div>
+                
+                <div class="card-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn primary-btn glass-card" style="flex: 2; opacity: 0.5;" disabled>Tamamlandı</button>
+                    <button class="btn secondary-btn glass-card" style="flex: 1;">Fatura Görüntüle</button>
+                </div>
+            </div>
+            
+        </div>
+
+    </main>
+</body>
+</html>
