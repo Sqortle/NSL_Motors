@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class DtoAdminInvoice implements Serializable {
+public class DtoAdminInvoice {
 
     // Fatura Alanlar?
     private Long id; // Order ID ile aynı

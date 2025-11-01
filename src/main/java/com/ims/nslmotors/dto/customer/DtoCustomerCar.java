@@ -1,12 +1,12 @@
-package com.ims.nslmotors.dto.admin;
+// DtoCustomerCar.java
+package com.ims.nslmotors.dto.customer;
 
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-// Tüm alanlar? i?erir ve Long tipini kullan?r (null olabilmesi i?in)
 @Data
-public class DtoAdminCar {
+public class DtoCustomerCar {
 
     private Long id;
     private String make;
@@ -16,8 +16,9 @@ public class DtoAdminCar {
     private Integer stage1Hp;
     private Integer stage2Hp;
     private Integer stage3Hp;
+    private String carImageUrl;
+
+    // Müşterinin göreceği fiyatlar
     private BigDecimal stage1Price;
     private BigDecimal stage2Price;
-    private BigDecimal stage3Price;
-    private String carImageUrl;
 }

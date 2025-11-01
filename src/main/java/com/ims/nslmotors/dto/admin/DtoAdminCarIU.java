@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class DtoAdminCarIU implements Serializable {
+public class DtoAdminCarIU {
 
     private Long id;
 
