@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+    <div th:fragment="content">
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Hesap Doğrulama</h1>
+                <p class="page-subtitle">Email adresinize gönderilen 6 haneli doğrulama kodunu giriniz</p>
+            </div>
+        </section>
+
+        <section class="auth-section">
+            <div class="container">
+                <div class="auth-container">
+                    <div class="auth-card glass-card">
+                        <h2 class="auth-title">Hesap Doğrulama</h2>
+                        
+                        <!-- Email Bilgisi -->
+                        <div th:if="${email}" class="info-box" style="background-color: rgba(0, 255, 255, 0.1); color: #00ffff; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 255, 0.3);">
+                            <p style="margin: 0;">Doğrulama kodu <strong th:text="${email}"></strong> adresine gönderildi.</p>
+                        </div>
+
+                        <!-- Hata Mesajı -->
+                        <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 0, 0, 0.1); color: #ff4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <!-- Başarı Mesajı -->
+                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 255, 0, 0.1); color: #00aa00; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 0, 0.3);">
+                            <span th:text="${successMessage}"></span>
+                        </div>
+
+                        <form class="auth-form" method="post" th:action="@{/customer/auth/verify-register}" th:object="${verificationDto}">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    th:field="*{email}" 
+                                    class="form-input"
+                                    placeholder="ornek@email.com"
+                                    required>
+                                <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                    <span th:errors="*{email}"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="verificationCode">Doğrulama Kodu</label>
+                                <input 
+                                    type="text" 
+                                    id="verificationCode" 
+                                    th:field="*{verificationCode}" 
+                                    class="form-input"
+                                    placeholder="000000"
+                                    maxlength="6"
+                                    pattern="[0-9]{6}"
+                                    style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;"
+                                    required>
+                                <div th:if="${#fields.hasErrors('verificationCode')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                    <span th:errors="*{verificationCode}"></span>
+                                </div>
+                                <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                    6 haneli doğrulama kodunu giriniz
+                                </small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                                Hesabı Doğrula
+                            </button>
+                        </form>
+
+                        <div class="auth-footer" style="margin-top: 20px; text-align: center; color: rgba(255, 255, 255, 0.7);">
+                            <p>Kod gelmedi mi? <a th:href="@{/customer/auth/register}" style="color: #00ff88;">Tekrar kayıt olun</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        :root {
+            --color-black: #000000;
+            --color-black-soft: #0a0a0a;
+            --color-black-lighter: #1a1a1a;
+            --color-brg: #004225;
+            --color-brg-light: #006644;
+            --color-brg-dark: #002d1a;
+            --color-brg-glow: #00ff88;
+            --color-white: #ffffff;
+            --color-gray: #888888;
+            --color-gray-light: #cccccc;
+            --color-gray-dark: #333333;
+            --font-primary: 'Inter', sans-serif;
+            --font-accent: 'Racing Sans One', cursive;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 3rem;
+            --spacing-xl: 4rem;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-brg: 0 0 20px rgba(0, 102, 68, 0.3);
+            --shadow-brg-glow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Racing+Sans+One&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <h1 class="admin-title">
+                    <span class="logo-text">NSL</span>
+                    <span class="logo-accent">MOTORS</span>
+                    <span class="admin-badge">Admin Panel</span>
+                </h1>
+                <div class="admin-actions">
+                    <span style="color: var(--color-gray-light); margin-right: 15px;" th:text="${adminEmail}"></span>
+                    <a th:href="@{/admin/auth/logout}" class="btn btn-secondary">Çıkış Yap</a>
+                    <a th:href="@{/}" class="btn btn-secondary" style="margin-left: 10px;">Ana Sayfaya Dön</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Navigation Tabs -->
+        <nav class="admin-tabs">
+            <button class="tab-btn active" data-tab="customers">Kullanıcılar</button>
+            <button class="tab-btn" data-tab="employees">Ustalar</button>
+            <button class="tab-btn" data-tab="cars">Arabalar</button>
+            <button class="tab-btn" data-tab="orders">Siparişler</button>
+            <button class="tab-btn" data-tab="invoices">Faturalar</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Customers Tab -->
+            <div class="tab-content active" id="customers-tab">
+                <div class="module-header">
+                    <h2>Kullanıcı Yönetimi</h2>
+                    <button class="btn btn-primary" onclick="openCustomerModal()">Yeni Kullanıcı Ekle</button>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="customers-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customers-tbody">
+                            <tr>
+                                <td colspan="6" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="customers-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Employees Tab -->
+            <div class="tab-content" id="employees-tab">
+                <div class="module-header">
+                    <h2>Usta Yönetimi</h2>
+                    <button class="btn btn-primary" onclick="openEmployeeModal()">Yeni Usta Ekle</button>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="employees-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Rol</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                                <th>Dükkan</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees-tbody">
+                            <tr>
+                                <td colspan="8" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="employees-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Cars Tab -->
+            <div class="tab-content" id="cars-tab">
+                <div class="module-header">
+                    <h2>Araba Yönetimi</h2>
+                    <button class="btn btn-primary" onclick="openCarModal()">Yeni Araba Ekle</button>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="cars-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Marka</th>
+                                <th>Model</th>
+                                <th>Yıl</th>
+                                <th>Stok HP</th>
+                                <th>Stage 1 HP</th>
+                                <th>Stage 2 HP</th>
+                                <th>Stage 3 HP</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cars-tbody">
+                            <tr>
+                                <td colspan="9" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="cars-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-content" id="orders-tab">
+                <div class="module-header">
+                    <h2>Sipariş Yönetimi</h2>
+                    <button class="btn btn-primary" onclick="openOrderModal()">Yeni Sipariş Ekle</button>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Sipariş No</th>
+                                <th>Müşteri</th>
+                                <th>Araba</th>
+                                <th>Stage</th>
+                                <th>Sipariş Tarihi</th>
+                                <th>Randevu Tarihi</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <tr>
+                                <td colspan="9" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="orders-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Invoices Tab -->
+            <div class="tab-content" id="invoices-tab">
+                <div class="module-header">
+                    <h2>Fatura Yönetimi</h2>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Sipariş No</th>
+                                <th>Fatura Tarihi</th>
+                                <th>Ara Toplam</th>
+                                <th>KDV</th>
+                                <th>Toplam</th>
+                                <th>Ödeme Tarihi</th>
+                                <th>Ödeme Yöntemi</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoices-tbody">
+                            <tr>
+                                <td colspan="9" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="invoices-pagination"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals will be inserted here by JavaScript -->
+    <div id="modal-container"></div>
+
+    <script th:src="@{/js/admin.js}"></script>
+</body>
+</html>
+

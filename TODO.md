@@ -9,3 +9,6 @@
 8. Customer profil CRUD ları da yok (sanırım)
 9. customer tarih seçerken başkasınıjn seçtiği tarihleri kapammak için gerekli sınıfıı daha yazmadım
 10. employee CRUD iskeletleri tamam securty ile güncellemek lazım customerdaki gibi
+11. admin paneli yapıldı gözden geçircek
+12. employee paneli yapılcak
+13. siparişler oluştulup faturalar oluştuturlcak

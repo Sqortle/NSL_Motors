@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
 
     @Autowired
     private AdminEmployeeRepository adminEmployeeRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable) {
@@ -79,6 +83,16 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
     public DtoAdminEmployee createEmployee(DtoAdminEmployeeIU employeeCreationDto) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeCreationDto, employee);
+        
+        // KRİTİK DÜZELTME: Yeni entity oluştururken ID'yi null yaparak 
+        // Hibernate'in merge yerine persist kullanmasını sağlıyoruz
+        employee.setId(null);
+        
+        // KRİTİK GÜVENLİK: Şifreyi BCrypt ile hashle
+        if (employeeCreationDto.getPassword() != null && !employeeCreationDto.getPassword().trim().isEmpty()) {
+            employee.setPassword(passwordEncoder.encode(employeeCreationDto.getPassword()));
+        }
+        
         Employee savedEmployee = adminEmployeeRepository.save(employee);
         return convertToDto(savedEmployee);
     }
@@ -90,7 +104,13 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
                     Employee employee = new Employee();
                     // DTO'dan Entity'ye kopyalama
                     BeanUtils.copyProperties(dto, employee);
-                    // Not: Şifre hash'leme işlemi burada yapılmalıdır (Security aktif olunca).
+                    // KRİTİK DÜZELTME: Yeni entity oluştururken ID'yi null yaparak 
+                    // Hibernate'in merge yerine persist kullanmasını sağlıyoruz
+                    employee.setId(null);
+                    // Şifreyi BCrypt ile hashle
+                    if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+                        employee.setPassword(passwordEncoder.encode(dto.getPassword()));
+                    }
                     return employee;
                 })
                 .collect(Collectors.toList());
@@ -106,13 +126,21 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
 
     @Override
     public DtoAdminEmployee updateEmployee(Long id, DtoAdminEmployeeIU updateDto) {
-        Employee existingEmployee = adminEmployeeRepository.findById(id).orElse(null);
+        Employee existingEmployee = adminEmployeeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ID " + id + " ile çalışan bulunamadı."));
+        
         String oldPassword = existingEmployee.getPassword();
-
         BeanUtils.copyProperties(updateDto, existingEmployee);
+        
+        // ID'yi koru
+        existingEmployee.setId(id);
 
+        // Şifre güncelleme kontrolü
         if (updateDto.getPassword() == null || updateDto.getPassword().trim().isEmpty()) {
             existingEmployee.setPassword(oldPassword);
+        } else {
+            // Yeni şifreyi BCrypt ile hashle
+            existingEmployee.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         }
 
         Employee updatedEmployee = adminEmployeeRepository.save(existingEmployee);

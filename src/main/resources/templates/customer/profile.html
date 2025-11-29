@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+    <div th:fragment="content">
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Profilim</h1>
+                <p class="page-subtitle">Profil bilgilerinizi görüntüleyin ve güncelleyin</p>
+            </div>
+        </section>
+
+        <section class="auth-section">
+            <div class="container">
+                <div class="auth-container">
+                    <div class="auth-card glass-card">
+                        <h2 class="auth-title">Profil Bilgilerim</h2>
+                        
+                        <!-- Başarı Mesajı -->
+                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 255, 0, 0.1); color: #00aa00; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 0, 0.3);">
+                            <span th:text="${successMessage}"></span>
+                        </div>
+
+                        <!-- Hata Mesajı -->
+                        <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 0, 0, 0.1); color: #ff4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <!-- Profil Bilgileri Güncelleme Formu -->
+                        <div style="margin-bottom: 40px;">
+                            <h3 style="color: #00ff88; margin-bottom: 20px; font-size: 1.25rem;">Kişisel Bilgiler</h3>
+                            <form class="auth-form" method="post" th:action="@{/customer/profile/update}" th:object="${profileUpdate}">
+                                <div class="form-group">
+                                    <label for="firstName">Ad</label>
+                                    <input 
+                                        type="text" 
+                                        id="firstName" 
+                                        th:field="*{firstName}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('firstName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{firstName}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="lastName">Soyad</label>
+                                    <input 
+                                        type="text" 
+                                        id="lastName" 
+                                        th:field="*{lastName}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('lastName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{lastName}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        th:field="*{email}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{email}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phoneNumber">Telefon Numarası</label>
+                                    <input 
+                                        type="tel" 
+                                        id="phoneNumber" 
+                                        th:field="*{phoneNumber}" 
+                                        class="form-input">
+                                    <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{phoneNumber}"></span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                                    Profil Bilgilerini Güncelle
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Şifre Değiştirme Formu -->
+                        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <h3 style="color: #00ff88; margin-bottom: 20px; font-size: 1.25rem;">Şifre Değiştir</h3>
+                            <form class="auth-form" method="post" th:action="@{/customer/profile/change-password}" th:object="${passwordChange}">
+                                <div class="form-group">
+                                    <label for="currentPassword">Mevcut Şifre</label>
+                                    <input 
+                                        type="password" 
+                                        id="currentPassword" 
+                                        th:field="*{currentPassword}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('currentPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{currentPassword}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newPassword">Yeni Şifre</label>
+                                    <input 
+                                        type="password" 
+                                        id="newPassword" 
+                                        th:field="*{newPassword}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('newPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{newPassword}"></span>
+                                    </div>
+                                    <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                        Yeni şifre minimum 8 karakter olmalıdır
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
+                                    <input 
+                                        type="password" 
+                                        id="confirmPassword" 
+                                        th:field="*{confirmPassword}" 
+                                        class="form-input"
+                                        required>
+                                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                        <span th:errors="*{confirmPassword}"></span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                                    Şifreyi Değiştir
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Çıkış Yap Butonu -->
+                        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <form method="post" th:action="@{/customer/profile/logout}">
+                                <button type="submit" class="btn" style="width: 100%; background-color: rgba(255, 0, 0, 0.2); color: #ff4444; border: 1px solid rgba(255, 0, 0, 0.3);">
+                                    Çıkış Yap
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+

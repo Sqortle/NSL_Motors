@@ -8,6 +8,6 @@ import java.util.Map;
 
 public interface ICustomerCarController {
 
-    // Markaya göre gruplanmış harita döndürür
+    // REST API: Markaya göre gruplanmış harita döndürür
     ResponseEntity<Map<String, List<DtoCustomerCar>>> getCarCatalog();
 }

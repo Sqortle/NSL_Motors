@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification; // Dinamik filtreleme i?in
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class AdminCustomerServiceImpl implements IAdminCustomerService {
 
     @Autowired
     private AdminCustomerRepository adminCustomerRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Page<DtoAdminCustomer> getCustomersWithPaginationAndSearch(DtoAdminCustomer dtoAdminCustomer, Pageable pageable) {
@@ -70,9 +74,16 @@ public class AdminCustomerServiceImpl implements IAdminCustomerService {
         // 1. DTO'dan Entity'ye dönüştür
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerCreationDto, customer);
+        
+        // KRİTİK DÜZELTME: Yeni entity oluştururken ID'yi null yaparak 
+        // Hibernate'in merge yerine persist kullanmasını sağlıyoruz
+        // Bu, optimistic locking hatasını önler
+        customer.setId(null);
 
-        // KRİTİK GÜVENLİK NOTU: Gerçek projede şifre hash'lenmelidir (passwordEncoder.encode(password))
-        // Şu an Security'yi atladığımız için düz metin kaydediyoruz.
+        // KRİTİK GÜVENLİK: Şifreyi BCrypt ile hashle
+        if (customerCreationDto.getPassword() != null && !customerCreationDto.getPassword().trim().isEmpty()) {
+            customer.setPassword(passwordEncoder.encode(customerCreationDto.getPassword()));
+        }
 
         // 2. Entity'yi veritabanına kaydet
         Customer savedCustomer = adminCustomerRepository.save(customer);
@@ -89,7 +100,13 @@ public class AdminCustomerServiceImpl implements IAdminCustomerService {
                     Customer customer = new Customer();
                     // DTO'dan Entity'ye kopyalama
                     BeanUtils.copyProperties(dto, customer);
-                    // Not: Şifre hash'leme işlemi burada yapılmalıdır (Security aktif olunca).
+                    // KRİTİK DÜZELTME: Yeni entity oluştururken ID'yi null yaparak 
+                    // Hibernate'in merge yerine persist kullanmasını sağlıyoruz
+                    customer.setId(null);
+                    // Şifreyi BCrypt ile hashle
+                    if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+                        customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+                    }
                     return customer;
                 })
                 .collect(Collectors.toList());
@@ -104,13 +121,21 @@ public class AdminCustomerServiceImpl implements IAdminCustomerService {
     }
 
     public DtoAdminCustomer updateCustomer(Long id, DtoAdminCustomerIU updateDto){
-        Customer existingCustomer = adminCustomerRepository.findById(id).orElse(null);//BURADA EXCEPTION GEÇMEDİM GGÖZDEN KAÇMASIN
+        Customer existingCustomer = adminCustomerRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ID " + id + " ile müşteri bulunamadı."));
 
         String oldPassword = existingCustomer.getPassword();
         BeanUtils.copyProperties(updateDto, existingCustomer);
+        
+        // ID'yi koru
+        existingCustomer.setId(id);
 
+        // Şifre güncelleme kontrolü
         if (updateDto.getPassword() == null || updateDto.getPassword().trim().isEmpty()) {
             existingCustomer.setPassword(oldPassword);
+        } else {
+            // Yeni şifreyi BCrypt ile hashle
+            existingCustomer.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         }
 
         Customer updatedCustomer = adminCustomerRepository.save(existingCustomer);

@@ -2,7 +2,9 @@
 package com.ims.nslmotors.services.customer;
 
 import com.ims.nslmotors.dto.customer.DtoCustomerRegistirationIU;
-import com.ims.nslmotors.dto.customer.DtoCustomerProfile; // Yeni Profil DTO'su
+import com.ims.nslmotors.dto.customer.DtoCustomerProfile;
+import com.ims.nslmotors.dto.customer.DtoCustomerLogin;
+import com.ims.nslmotors.dto.customer.DtoCustomerVerification;
 
 public interface ICustomerAuthService {
 
@@ -12,6 +14,9 @@ public interface ICustomerAuthService {
     // Doğrulama kodunu kontrol eder ve hesabı etkinleştirir
     DtoCustomerProfile verifyAndActivateAccount(String email, String verificationCode);
 
-    // Giriş işlemleri (ileride Security ile entegre edilecek)
-    // DtoCustomerProfile login(String email, String password);
+    // Giriş işlemi: Email ve şifre kontrolü yapar, doğrulama kodu gönderir
+    void initiateLogin(DtoCustomerLogin loginDto);
+
+    // Giriş doğrulama kodunu kontrol eder
+    DtoCustomerProfile verifyLogin(DtoCustomerVerification verificationDto);
 }

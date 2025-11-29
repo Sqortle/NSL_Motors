@@ -23,6 +23,14 @@
                     <li><a th:href="@{/catalog}" class="nav-link">Katalog</a></li>
                     <li><a th:href="@{/about}" class="nav-link">Hakkımızda</a></li>
                     <li><a th:href="@{/contact}" class="nav-link">İletişim</a></li>
+                    <li th:if="${session.customerId == null}">
+                        <a th:href="@{/customer/auth/login}" class="nav-link">Giriş Yap</a>
+                    </li>
+                    <li th:if="${session.customerId != null}" class="nav-dropdown">
+                        <a th:href="@{/customer/profile}" class="nav-link">
+                            <span th:text="${session.customerName != null ? session.customerName : 'Profilim'}"></span>
+                        </a>
+                    </li>
                 </ul>
                 <button class="mobile-menu-toggle" aria-label="Menu">
                     <span></span>

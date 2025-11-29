@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Girişi - NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Racing+Sans+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card glass-card">
+                    <h2 class="auth-title">Admin Girişi</h2>
+                    
+                    <!-- Başarı Mesajı -->
+                    <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 102, 68, 0.2); color: var(--color-brg-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 102, 68, 0.3);">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+
+                    <!-- Hata Mesajı -->
+                    <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 77, 77, 0.3);">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <form class="auth-form" method="post" th:action="@{/admin/auth/login}" th:object="${loginDto}">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                th:field="*{email}" 
+                                class="form-input"
+                                required>
+                            <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
+                                <span th:errors="*{email}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Şifre</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                th:field="*{password}" 
+                                class="form-input"
+                                required>
+                            <div th:if="${#fields.hasErrors('password')}" class="error-message" style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
+                                <span th:errors="*{password}"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                            Giriş Yap
+                        </button>
+                    </form>
+
+                    <div style="margin-top: 20px; text-align: center;">
+                        <a th:href="@{/}" style="color: var(--color-brg-light); text-decoration: none;">Ana Sayfaya Dön</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--color-black) 0%, var(--color-black-soft) 100%);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-card {
+            padding: var(--spacing-lg);
+        }
+
+        .auth-title {
+            font-family: var(--font-accent);
+            font-size: 2rem;
+            color: var(--color-white);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-sm);
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(0, 102, 68, 0.3);
+            border-radius: var(--radius-sm);
+            color: var(--color-white);
+            font-family: var(--font-primary);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-brg-light);
+            box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.2);
+        }
+    </style>
+</body>
+</html>
+
