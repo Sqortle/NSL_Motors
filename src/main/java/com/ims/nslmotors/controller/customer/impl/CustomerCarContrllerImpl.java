@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cars") // MÜŞTERİ YOLU
+@RequestMapping("/customer") // MÜŞTERİ YOLU
 @RequiredArgsConstructor
 public class CustomerCarContrllerImpl implements ICustomerCarController {
 
@@ -23,7 +23,7 @@ public class CustomerCarContrllerImpl implements ICustomerCarController {
     // --- READ: Araba Kataloğu (Markaya Göre Gruplanmış) ---
     // URL: GET /api/cars
     @Override
-    @GetMapping
+    @GetMapping("/cars")
     public ResponseEntity<Map<String, List<DtoCustomerCar>>> getCarCatalog() {
 
         Map<String, List<DtoCustomerCar>> catalog = customerCarService.getCarCatalogGroupedByMake();

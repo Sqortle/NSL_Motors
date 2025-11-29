@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface AdminCarRepository extends JpaRepository<Car, Long>,
         JpaSpecificationExecutor<Car> { // KRİTİK: Eklendi
 
+
 }
