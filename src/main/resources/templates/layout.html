@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title != null ? title + ' - NSL Motors' : 'NSL Motors - Premium Car Tuning'}">NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Racing+Sans+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a th:href="@{/}" class="logo">
+                    <span class="logo-text">NSL</span>
+                    <span class="logo-accent">MOTORS</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/}" class="nav-link">Ana Sayfa</a></li>
+                    <li><a th:href="@{/catalog}" class="nav-link">Katalog</a></li>
+                    <li><a th:href="@{/about}" class="nav-link">Hakkımızda</a></li>
+                    <li><a th:href="@{/contact}" class="nav-link">İletişim</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div th:replace="~{::content}"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">NSL Motors</h3>
+                    <p class="footer-text">Premium araba tuning hizmetleri ile aracınızın performansını maksimuma çıkarın.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Hızlı Linkler</h4>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/}">Ana Sayfa</a></li>
+                        <li><a th:href="@{/catalog}">Katalog</a></li>
+                        <li><a th:href="@{/about}">Hakkımızda</a></li>
+                        <li><a th:href="@{/contact}">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">İletişim</h4>
+                    <p class="footer-text">Email: info@nslmotors.com</p>
+                    <p class="footer-text">Tel: +90 (XXX) XXX XX XX</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NSL Motors. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

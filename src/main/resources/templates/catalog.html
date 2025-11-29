@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+    <div th:fragment="content">
+        <!-- Catalog Header -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Araba Kataloğu</h1>
+                <p class="page-subtitle">Tüm modellerimiz ve tuning paketleri</p>
+            </div>
+        </section>
+
+        <!-- Catalog Content -->
+        <section class="catalog-section">
+            <div class="container">
+                <div class="catalog-grid" th:if="${catalog != null and !catalog.isEmpty()}">
+                    <div class="catalog-group" th:each="makeEntry : ${catalog}">
+                        <div class="make-header glass-card">
+                            <h2 class="make-title" th:text="${makeEntry.key}">Marka</h2>
+                            <span class="make-count" th:text="${#lists.size(makeEntry.value) + ' Model'}">X Model</span>
+                        </div>
+                        <div class="cars-list">
+                            <div class="car-card-detailed glass-card" th:each="car : ${makeEntry.value}">
+                                <div class="car-image-container" th:if="${car.carImageUrl != null and !car.carImageUrl.isEmpty()}">
+                                    <img th:src="${car.carImageUrl}" th:alt="${car.make + ' ' + car.model}" class="car-image">
+                                </div>
+                                <div class="car-image-placeholder" th:if="${car.carImageUrl == null or car.carImageUrl.isEmpty()}">
+                                    <span class="placeholder-icon">🚗</span>
+                                </div>
+                                <div class="car-info">
+                                    <h3 class="car-name" th:text="${car.make + ' ' + car.model}">Araba Adı</h3>
+                                    <p class="car-year" th:text="${car.year}">Yıl</p>
+                                    <div class="car-specs">
+                                        <div class="spec-item">
+                                            <span class="spec-label">Stock HP:</span>
+                                            <span class="spec-value" th:text="${car.stockHp}">-</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <span class="spec-label">Stage 1 HP:</span>
+                                            <span class="spec-value accent" th:text="${car.stage1Hp}">-</span>
+                                        </div>
+                                        <div class="spec-item">
+                                            <span class="spec-label">Stage 2 HP:</span>
+                                            <span class="spec-value accent" th:text="${car.stage2Hp}">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="car-pricing">
+                                        <div class="price-item">
+                                            <span class="price-label">Stage 1:</span>
+                                            <span class="price-value" th:text="${#numbers.formatDecimal(car.stage1Price, 0, 'POINT', 2, 'POINT') + ' ₺'}">-</span>
+                                        </div>
+                                        <div class="price-item">
+                                            <span class="price-label">Stage 2:</span>
+                                            <span class="price-value" th:text="${#numbers.formatDecimal(car.stage2Price, 0, 'POINT', 2, 'POINT') + ' ₺'}">-</span>
+                                        </div>
+                                    </div>
+                                    <a th:href="@{/car/{id}(id=${car.id})}" class="btn btn-primary btn-small">Detayları Gör</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty-state" th:if="${catalog == null or catalog.isEmpty()}">
+                    <div class="empty-content glass-card">
+                        <span class="empty-icon">🚗</span>
+                        <h3 class="empty-title">Henüz araba eklenmemiş</h3>
+                        <p class="empty-text">Yakında kataloğumuz güncellenecektir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
