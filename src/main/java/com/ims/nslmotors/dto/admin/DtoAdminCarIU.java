@@ -40,4 +40,6 @@ public class DtoAdminCarIU {
     @DecimalMin(value = "0.00", message = "Fiyat negatif olamaz.")
     private BigDecimal stage3Price;
 
-    private String carImageUrl;}
+    private String carImageUrl;
+    private String makeImageUrl;
+}

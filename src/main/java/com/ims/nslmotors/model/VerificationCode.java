@@ -18,8 +18,16 @@ public class VerificationCode {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = true)
     private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = true)
+    private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id", nullable = true)
+    private Appointment appointment;
 
     @Column(name = "code", length = 6, nullable = false)
     private String code;

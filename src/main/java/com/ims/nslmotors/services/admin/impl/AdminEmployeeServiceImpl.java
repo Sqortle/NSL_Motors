@@ -29,15 +29,15 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable) {
-        Specification<Employee> specification = buildSpecification(dtoAdminEmployee);
+    public Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable, String currentUserRole) {
+        Specification<Employee> specification = buildSpecification(dtoAdminEmployee, currentUserRole);
 
         Page<Employee> customerPage = adminEmployeeRepository.findAll(specification, pageable);
 
         return customerPage.map(this::convertToDto);
     }
 
-    private Specification<Employee> buildSpecification(DtoAdminEmployee dtoAdminEmployee) {
+    private Specification<Employee> buildSpecification(DtoAdminEmployee dtoAdminEmployee, String currentUserRole) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -73,8 +73,18 @@ public class AdminEmployeeServiceImpl implements IAdminEmployeeService {
                 predicates.add(criteriaBuilder.like(root.get("tcKimlikNo"),
                         "%" + dtoAdminEmployee.getTcKimlikNo() + "%"));
             }
+            // Role filtresi
+            if (dtoAdminEmployee.getRole() != null && !dtoAdminEmployee.getRole().trim().isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("role"), dtoAdminEmployee.getRole()));
+            }
 
-            // T?m ko?ullar? AND ile birle?tir
+            // KRİTİK GÜVENLİK: OWNER rolündeki kullanıcıları sadece OWNER'lar görebilir
+            // Eğer giriş yapan kullanıcı OWNER değilse, OWNER rolündeki kullanıcıları filtrele
+            if (!"OWNER".equals(currentUserRole)) {
+                predicates.add(criteriaBuilder.notEqual(root.get("role"), "OWNER"));
+            }
+
+            // Tüm koşulları AND ile birleştir
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

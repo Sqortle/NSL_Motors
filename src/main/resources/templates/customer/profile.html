@@ -1,156 +1,359 @@
 <!DOCTYPE html>
-<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Profilim - NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--color-brg), var(--color-brg-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--color-white);
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 102, 68, 0.4);
+            border: 3px solid rgba(0, 102, 68, 0.3);
+        }
+
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--color-brg-light), var(--color-brg-glow));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            color: var(--color-white);
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-xs);
+            font-family: var(--font-accent);
+            text-shadow: 0 0 20px rgba(0, 102, 68, 0.3);
+        }
+
+        .profile-info p {
+            color: var(--color-gray-light);
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .profile-info p::before {
+            content: '✉';
+            color: var(--color-brg-light);
+            font-size: 1.25rem;
+        }
+
+        .appointments-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            color: var(--color-brg-light);
+            font-size: 1.75rem;
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-family: var(--font-accent);
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, rgba(0, 102, 68, 0.3), transparent);
+        }
+
+        .appointments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .appointment-card {
+            padding: var(--spacing-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--color-brg), var(--color-brg-light));
+        }
+
+        /* Shimmer efektini appointment kartlarından kaldır */
+        .appointment-card.glass-card::before {
+            background: linear-gradient(to bottom, var(--color-brg), var(--color-brg-light));
+            width: 4px;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-size: auto;
+            background-position: 0 0;
+            animation: none;
+            transform: none;
+        }
+
+        .appointment-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: rgba(0, 102, 68, 0.2);
+            color: var(--color-brg-light);
+            border: 1px solid rgba(0, 102, 68, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .appointment-car {
+            font-size: 1.25rem;
+            color: var(--color-white);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .appointment-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-md);
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--color-gray);
+            font-size: 0.875rem;
+        }
+
+        .detail-icon {
+            width: 18px;
+            height: 18px;
+            fill: var(--color-brg-light);
+        }
+
+        .detail-value {
+            color: var(--color-gray-light);
+        }
+
+        .appointment-price {
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-label {
+            color: var(--color-gray);
+            font-size: 0.875rem;
+        }
+
+        .price-value {
+            color: var(--color-brg-light);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            fill: rgba(0, 102, 68, 0.5);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-state h3 {
+            color: var(--color-gray);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .empty-state p {
+            color: var(--color-gray-dark);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .btn-book {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin-top: 80px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+
+            .appointments-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div th:fragment="content">
-        <section class="page-header">
-            <div class="container">
-                <h1 class="page-title">Profilim</h1>
-                <p class="page-subtitle">Profil bilgilerinizi görüntüleyin ve güncelleyin</p>
+    <div class="profile-container">
+        <!-- Profil Başlığı -->
+        <div class="profile-header glass-card">
+            <div class="profile-avatar" th:text="${#strings.substring(customerName, 0, 1)}">M</div>
+            <div class="profile-info">
+                <h1 th:text="${customerName}">Müşteri Adı</h1>
+                <p th:text="${customerEmail}">email@example.com</p>
             </div>
-        </section>
+        </div>
 
-        <section class="auth-section">
-            <div class="container">
-                <div class="auth-container">
-                    <div class="auth-card glass-card">
-                        <h2 class="auth-title">Profil Bilgilerim</h2>
-                        
-                        <!-- Başarı Mesajı -->
-                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 255, 0, 0.1); color: #00aa00; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 0, 0.3);">
-                            <span th:text="${successMessage}"></span>
+        <!-- Randevular -->
+        <div class="appointments-section">
+            <h2 class="section-title">Randevularım</h2>
+
+            <!-- Randevu varsa -->
+            <div class="appointments-grid" th:if="${!appointments.isEmpty()}">
+                <div class="appointment-card glass-card" th:each="appointment : ${appointments}">
+                    <span class="appointment-status"
+                          th:classappend="${appointment.status == 'CONFIRMED' ? 'status-confirmed' : 
+                                         appointment.status == 'PENDING' ? 'status-pending' : 
+                                         appointment.status == 'COMPLETED' ? 'status-completed' : 'status-cancelled'}"
+                          th:text="${appointment.status == 'CONFIRMED' ? 'Onaylandı' : 
+                                   appointment.status == 'PENDING' ? 'Beklemede' : 
+                                   appointment.status == 'COMPLETED' ? 'Tamamlandı' : 'İptal'}">
+                        Onaylandı
+                    </span>
+
+                    <div class="appointment-car" th:text="${appointment.carName}">
+                        BMW M3
+                    </div>
+
+                    <div class="appointment-details">
+                        <div class="detail-row">
+                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                            </svg>
+                            <span class="detail-value" th:text="${appointment.appointmentDate + ' - ' + appointment.appointmentTime}">
+                                2024-12-20 14:00
+                            </span>
                         </div>
 
-                        <!-- Hata Mesajı -->
-                        <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 0, 0, 0.1); color: #ff4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
-                            <span th:text="${errorMessage}"></span>
+                        <div class="detail-row">
+                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <span class="detail-value" th:text="${appointment.shopName}">NSL Motors Merkez</span>
                         </div>
 
-                        <!-- Profil Bilgileri Güncelleme Formu -->
-                        <div style="margin-bottom: 40px;">
-                            <h3 style="color: #00ff88; margin-bottom: 20px; font-size: 1.25rem;">Kişisel Bilgiler</h3>
-                            <form class="auth-form" method="post" th:action="@{/customer/profile/update}" th:object="${profileUpdate}">
-                                <div class="form-group">
-                                    <label for="firstName">Ad</label>
-                                    <input 
-                                        type="text" 
-                                        id="firstName" 
-                                        th:field="*{firstName}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('firstName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{firstName}"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="lastName">Soyad</label>
-                                    <input 
-                                        type="text" 
-                                        id="lastName" 
-                                        th:field="*{lastName}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('lastName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{lastName}"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input 
-                                        type="email" 
-                                        id="email" 
-                                        th:field="*{email}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{email}"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="phoneNumber">Telefon Numarası</label>
-                                    <input 
-                                        type="tel" 
-                                        id="phoneNumber" 
-                                        th:field="*{phoneNumber}" 
-                                        class="form-input">
-                                    <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{phoneNumber}"></span>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
-                                    Profil Bilgilerini Güncelle
-                                </button>
-                            </form>
+                        <div class="detail-row">
+                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
+                            </svg>
+                            <span class="detail-value" th:text="'Stage ' + ${appointment.selectedStage} + ' Tuning'">Stage 2 Tuning</span>
                         </div>
 
-                        <!-- Şifre Değiştirme Formu -->
-                        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                            <h3 style="color: #00ff88; margin-bottom: 20px; font-size: 1.25rem;">Şifre Değiştir</h3>
-                            <form class="auth-form" method="post" th:action="@{/customer/profile/change-password}" th:object="${passwordChange}">
-                                <div class="form-group">
-                                    <label for="currentPassword">Mevcut Şifre</label>
-                                    <input 
-                                        type="password" 
-                                        id="currentPassword" 
-                                        th:field="*{currentPassword}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('currentPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{currentPassword}"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="newPassword">Yeni Şifre</label>
-                                    <input 
-                                        type="password" 
-                                        id="newPassword" 
-                                        th:field="*{newPassword}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('newPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{newPassword}"></span>
-                                    </div>
-                                    <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 5px; display: block;">
-                                        Yeni şifre minimum 8 karakter olmalıdır
-                                    </small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
-                                    <input 
-                                        type="password" 
-                                        id="confirmPassword" 
-                                        th:field="*{confirmPassword}" 
-                                        class="form-input"
-                                        required>
-                                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
-                                        <span th:errors="*{confirmPassword}"></span>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
-                                    Şifreyi Değiştir
-                                </button>
-                            </form>
+                        <div class="detail-row">
+                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <span class="detail-value" th:text="${appointment.technicianName}">Ahmet Yılmaz</span>
                         </div>
+                    </div>
 
-                        <!-- Çıkış Yap Butonu -->
-                        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                            <form method="post" th:action="@{/customer/profile/logout}">
-                                <button type="submit" class="btn" style="width: 100%; background-color: rgba(255, 0, 0, 0.2); color: #ff4444; border: 1px solid rgba(255, 0, 0, 0.3);">
-                                    Çıkış Yap
-                                </button>
-                            </form>
-                        </div>
+                    <div class="appointment-price">
+                        <span class="price-label">Tutar</span>
+                        <span class="price-value" th:text="${#numbers.formatDecimal(appointment.price, 1, 'DEFAULT', 2, 'DEFAULT')} + ' ₺'">15.000,00 ₺</span>
                     </div>
                 </div>
             </div>
-        </section>
+
+            <!-- Randevu yoksa -->
+            <div class="empty-state" th:if="${appointments.isEmpty()}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                </svg>
+                <h3>Henüz randevunuz yok</h3>
+                <p>İlk randevunuzu oluşturmak için katalogdan bir araç seçin!</p>
+                <a href="/catalog" class="btn-book">Kataloga Git</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
-

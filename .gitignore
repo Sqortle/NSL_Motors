@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secret Files - Do not commit to GitHub ###
+src/main/resources/application-secrets.properties

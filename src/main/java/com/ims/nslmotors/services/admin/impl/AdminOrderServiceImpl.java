@@ -7,6 +7,7 @@ import com.ims.nslmotors.repository.admin.AdminOrderRepository;
 import com.ims.nslmotors.repository.admin.AdminCarRepository;
 import com.ims.nslmotors.repository.admin.AdminCustomerRepository;
 import com.ims.nslmotors.repository.admin.AdminEmployeeRepository;
+import com.ims.nslmotors.repository.admin.AdminInvoiceRepository;
 import com.ims.nslmotors.services.admin.IAdminOrderService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
     private final AdminCustomerRepository customerRepository; // FK i?in
     private final AdminEmployeeRepository employeeRepository; // FK i?in
     private final AdminCarRepository carModelRepository; // FK i?in
+    private final AdminInvoiceRepository invoiceRepository;
 
     // --- Helper: Benzersiz 12 Haneli Sipariş Numarası Üretimi ---
     private String generateUniqueOrderNumber() {
@@ -228,6 +230,4 @@ public class AdminOrderServiceImpl implements IAdminOrderService {
         }
         orderRepository.deleteById(id);
     }
-
-    // ... (createOrdersBulk metodu buraya eklenebilir) ...
 }

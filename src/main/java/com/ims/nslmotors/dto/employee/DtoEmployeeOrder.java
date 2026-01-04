@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 @Data
 public class DtoEmployeeOrder {
 
+    private Long id;
     private String orderNumber;
     private String customerFullName; // Müşterinin tam adı
 

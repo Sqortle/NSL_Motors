@@ -34,20 +34,31 @@ public class CustomerCarContrllerImpl implements ICustomerCarController {
         return "index";
     }
 
-    // Katalog Sayfası
+    // Katalog Sayfası - Markalar Grid
     @GetMapping("/catalog")
     public String catalog(Model model) {
-        Map<String, List<DtoCustomerCar>> catalog = customerCarService.getCarCatalogGroupedByMake();
-        model.addAttribute("catalog", catalog);
+        Map<String, String> makesWithImages = customerCarService.getMakesWithImages();
+        model.addAttribute("makesWithImages", makesWithImages);
         model.addAttribute("title", "Katalog");
         return "catalog";
+    }
+
+    // Marka Modelleri Sayfası
+    @GetMapping("/catalog/{make}")
+    public String catalogByMake(@PathVariable String make, Model model) {
+        List<DtoCustomerCar> cars = customerCarService.getCarsByMake(make);
+        model.addAttribute("make", make);
+        model.addAttribute("cars", cars);
+        model.addAttribute("title", make + " Modelleri");
+        return "catalog-models";
     }
 
     // Araba Detay Sayfası
     @GetMapping("/car/{id}")
     public String carDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("carId", id);
-        model.addAttribute("title", "Araba Detayı");
+        DtoCustomerCar car = customerCarService.getCarById(id);
+        model.addAttribute("car", car);
+        model.addAttribute("title", car.getMake() + " " + car.getModel() + " - Detaylar");
         return "car-detail";
     }
 

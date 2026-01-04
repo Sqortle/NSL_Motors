@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+    <div th:fragment="content">
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Ödeme</h1>
+                <p class="page-subtitle">Randevu özeti ve ödeme bilgileri</p>
+            </div>
+        </section>
+
+        <section class="catalog-section">
+            <div class="container">
+                <div class="payment-container">
+                    <!-- Randevu Özeti -->
+                    <div class="payment-section glass-card">
+                        <h2 style="color: var(--color-brg-light); font-family: var(--font-accent); font-size: 1.75rem; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-sm); border-bottom: 2px solid rgba(0, 102, 68, 0.3);">Randevu Özeti</h2>
+                        <div class="appointment-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">Araç</span>
+                                <span class="summary-value" th:text="${appointment.carName}">...</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Dükkan</span>
+                                <span class="summary-value" th:text="${appointment.shopName}">NSL Motors Merkez</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Tarih & Saat</span>
+                                <span class="summary-value" th:text="${appointment.appointmentDate + ' - ' + appointment.appointmentTime}">2024-12-20 14:00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Hizmet</span>
+                                <span class="summary-value" th:text="'Stage ' + ${appointment.selectedStage} + ' Tuning'">Stage 2 Tuning</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Teknisyen</span>
+                                <span class="summary-value" th:text="${appointment.technicianName}">Ahmet Yılmaz</span>
+                            </div>
+                        </div>
+                        <div class="total-price" th:text="${#numbers.formatDecimal(appointment.price, 1, 'DEFAULT', 2, 'DEFAULT')} + ' ₺'">15.000,00 ₺</div>
+                    </div>
+
+                    <!-- Ödeme Formu -->
+                    <div class="payment-section glass-card">
+                        <h2 style="color: var(--color-brg-light); font-family: var(--font-accent); font-size: 1.75rem; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-sm); border-bottom: 2px solid rgba(0, 102, 68, 0.3);">Ödeme Bilgileri</h2>
+                        
+                        <div id="errorMessage" class="error-message"></div>
+                        <div id="successMessage" class="success-message"></div>
+
+                        <form id="paymentForm" class="payment-form">
+                            <input type="hidden" id="appointmentId" th:value="${appointment.id}">
+
+                            <div class="form-group">
+                                <label for="cardHolderName">Kart Üzerindeki İsim</label>
+                                <input type="text" id="cardHolderName" placeholder="Ad Soyad" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cardNumber">Kart Numarası</label>
+                                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            </div>
+
+                            <div class="card-row">
+                                <div class="form-group">
+                                    <label for="expiryDate">Son Kullanma Tarihi</label>
+                                    <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123" maxlength="4" required>
+                                </div>
+                            </div>
+
+                            <div class="verification-section">
+                                <p>Ödemenizi tamamlamak için email adresinize gönderilecek doğrulama kodunu girin.</p>
+                                <div class="verification-row">
+                                    <input type="text" id="verificationCode" placeholder="6 haneli kod" maxlength="6" style="flex: 1;">
+                                    <button type="button" id="sendCodeBtn" class="btn-send-code">Kod Gönder</button>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="payBtn" class="btn btn-primary btn-large" disabled>Ödemeyi Tamamla</button>
+
+                            <div class="security-note">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                                </svg>
+                                <p>Ödeme bilgileriniz 256-bit SSL şifrelemesi ile güvence altındadır.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            .payment-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-lg);
+                margin-top: var(--spacing-md);
+            }
+
+            .payment-section {
+                padding: var(--spacing-lg);
+            }
+
+            .appointment-summary {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: var(--spacing-sm) 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .summary-label {
+                color: var(--color-gray);
+                font-size: 0.875rem;
+            }
+
+            .summary-value {
+                color: var(--color-white);
+                font-weight: 500;
+            }
+
+            .total-price {
+                font-size: 1.75rem;
+                color: var(--color-brg-light);
+                font-weight: bold;
+                text-align: right;
+                margin-top: var(--spacing-md);
+                padding-top: var(--spacing-md);
+                border-top: 2px solid rgba(0, 102, 68, 0.3);
+            }
+
+            .payment-form {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            .form-group label {
+                color: var(--color-white);
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+
+            .form-group input {
+                background: rgba(26, 26, 26, 0.8);
+                border: 1px solid rgba(0, 102, 68, 0.3);
+                border-radius: var(--radius-sm);
+                padding: var(--spacing-sm);
+                color: var(--color-white);
+                font-size: 1rem;
+                font-family: var(--font-primary);
+                transition: all 0.3s ease;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--color-brg-light);
+                box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.2);
+            }
+
+            .card-row {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: var(--spacing-sm);
+            }
+
+            .verification-section {
+                background: rgba(0, 102, 68, 0.1);
+                border: 1px solid rgba(0, 102, 68, 0.3);
+                border-radius: var(--radius-sm);
+                padding: var(--spacing-md);
+                margin: var(--spacing-md) 0;
+            }
+
+            .verification-section p {
+                color: var(--color-gray);
+                font-size: 0.875rem;
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .verification-row {
+                display: flex;
+                gap: var(--spacing-xs);
+            }
+
+            .verification-row input {
+                flex: 1;
+            }
+
+            .btn-send-code {
+                background: rgba(0, 102, 68, 0.2);
+                color: var(--color-brg-light);
+                border: 1px solid var(--color-brg-light);
+                padding: var(--spacing-sm) var(--spacing-md);
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+
+            .btn-send-code:hover {
+                background: var(--color-brg);
+                border-color: var(--color-brg);
+                color: var(--color-white);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-brg);
+            }
+
+            .btn-send-code:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .security-note {
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-xs);
+                padding: var(--spacing-sm);
+                background: rgba(0, 102, 68, 0.1);
+                border-radius: var(--radius-sm);
+                margin-top: var(--spacing-md);
+            }
+
+            .security-note svg {
+                width: 24px;
+                height: 24px;
+                fill: var(--color-brg-light);
+            }
+
+            .security-note p {
+                color: var(--color-gray);
+                font-size: 0.8125rem;
+                margin: 0;
+            }
+
+            .error-message, .success-message {
+                padding: var(--spacing-sm);
+                border-radius: var(--radius-sm);
+                margin-bottom: var(--spacing-md);
+                display: none;
+            }
+
+            .error-message {
+                background: rgba(255, 77, 77, 0.1);
+                border: 1px solid rgba(255, 77, 77, 0.3);
+                color: #ff4d4d;
+            }
+
+            .success-message {
+                background: rgba(0, 102, 68, 0.2);
+                border: 1px solid rgba(0, 102, 68, 0.3);
+                color: var(--color-brg-light);
+            }
+
+            @media (max-width: 768px) {
+                .payment-container {
+                    grid-template-columns: 1fr;
+                }
+
+                .card-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+        <script th:inline="javascript">
+            const appointmentId = [[${appointment.id}]];
+            let verificationSent = false;
+
+            // Kart numarası formatla
+            document.getElementById('cardNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '');
+                let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                e.target.value = formattedValue;
+            });
+
+            // Expiry date formatla
+            document.getElementById('expiryDate').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                }
+                e.target.value = value;
+            });
+
+            // Sadece rakam girişi
+            document.getElementById('cvv').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+
+            document.getElementById('verificationCode').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                // Kod girildiğinde ödeme butonunu aktif et
+                document.getElementById('payBtn').disabled = e.target.value.length !== 6;
+            });
+
+            // Doğrulama kodu gönder
+            document.getElementById('sendCodeBtn').addEventListener('click', async function() {
+                const btn = this;
+                btn.disabled = true;
+                btn.textContent = 'Gönderiliyor...';
+
+                try {
+                    const response = await fetch(`/api/payment/send-verification?appointmentId=${appointmentId}`, {
+                        method: 'POST'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showSuccess('Doğrulama kodu email adresinize gönderildi!');
+                        verificationSent = true;
+                        btn.textContent = 'Kod Gönderildi ✓';
+                    } else {
+                        showError(data.message);
+                        btn.disabled = false;
+                        btn.textContent = 'Kod Gönder';
+                    }
+                } catch (error) {
+                    showError('Doğrulama kodu gönderilemedi');
+                    btn.disabled = false;
+                    btn.textContent = 'Kod Gönder';
+                }
+            });
+
+            // Ödeme formu gönder
+            document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const payBtn = document.getElementById('payBtn');
+                payBtn.disabled = true;
+                payBtn.textContent = 'İşleniyor...';
+
+                const paymentData = {
+                    appointmentId: appointmentId,
+                    cardHolderName: document.getElementById('cardHolderName').value,
+                    cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+                    expiryDate: document.getElementById('expiryDate').value,
+                    cvv: document.getElementById('cvv').value,
+                    verificationCode: document.getElementById('verificationCode').value
+                };
+
+                try {
+                    const response = await fetch('/api/payment/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(paymentData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showSuccess('Ödeme başarılı! Yönlendiriliyorsunuz...');
+                        setTimeout(() => {
+                            window.location.href = `/payment/success?transactionRef=${data.transactionReference}`;
+                        }, 1500);
+                    } else {
+                        showError(data.message);
+                        payBtn.disabled = false;
+                        payBtn.textContent = 'Ödemeyi Tamamla';
+                    }
+                } catch (error) {
+                    showError('Ödeme işlemi başarısız oldu');
+                    payBtn.disabled = false;
+                    payBtn.textContent = 'Ödemeyi Tamamla';
+                }
+            });
+
+            function showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+
+            function showSuccess(message) {
+                const successDiv = document.getElementById('successMessage');
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        </script>
+    </div>
+</body>
+</html>

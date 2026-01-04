@@ -69,8 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
             // Basic validation
             const name = document.getElementById('name');
             const email = document.getElementById('email');
@@ -99,11 +97,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 message.style.borderColor = 'rgba(0, 102, 68, 0.3)';
             }
             
-            if (isValid) {
-                // Here you would typically send the form data to the server
-                alert('Mesajınız gönderildi! (Bu bir demo uygulamadır)');
-                contactForm.reset();
+            if (!isValid) {
+                e.preventDefault();
             }
+            // If valid, let the form submit naturally to the server
         });
     }
 });

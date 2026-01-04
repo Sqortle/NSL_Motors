@@ -12,4 +12,13 @@ public interface ICustomerCarService {
 
     // Tüm arabaları düz bir liste halinde döndürür (Gerekirse)
     List<DtoCustomerCar> getAllCarsForCustomer();
+
+    // Markaları ve makeImageUrl'lerini döndüren metot (Map<Marka, makeImageUrl>)
+    Map<String, String> getMakesWithImages();
+
+    // Belirli bir markaya ait arabaları döndürür
+    List<DtoCustomerCar> getCarsByMake(String make);
+
+    // ID'ye göre tek bir araba döndürür
+    DtoCustomerCar getCarById(Long id);
 }

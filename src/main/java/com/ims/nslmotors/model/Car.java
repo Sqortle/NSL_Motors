@@ -48,4 +48,7 @@ public class Car {
 
     @Column(name = "car_image_url")
     private String carImageUrl;
+
+    @Column(name = "make_image_url")
+    private String makeImageUrl;
 }

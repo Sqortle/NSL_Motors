@@ -6,7 +6,9 @@ import com.ims.nslmotors.dto.admin.DtoAdminCarIU;
 import com.ims.nslmotors.services.admin.IAdminCarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable; // Sayfalama deste?i
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,12 @@ public class AdminCarControllerImpl implements IAdminCarController {
             @ModelAttribute DtoAdminCar criteria,
             // Spring, page, size, sort parametrelerini otomatik doldurur
             Pageable pageable) {
+
+        // Eğer sort parametresi yoksa, default olarak make (marka) A-Z sırala (case-insensitive)
+        if (pageable.getSort().isUnsorted()) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), 
+                Sort.by(Sort.Order.asc("make").ignoreCase()));
+        }
 
         Page<DtoAdminCar> carPage = carService.getCars(criteria, pageable);
 

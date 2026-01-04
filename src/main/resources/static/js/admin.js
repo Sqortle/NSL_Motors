@@ -89,6 +89,7 @@ function renderCustomersTable(customers) {
         tbody.innerHTML = '<tr><td colspan="6" class="loading">Kayıt bulunamadı.</td></tr>';
         return;
     }
+    
     tbody.innerHTML = customers.map(customer => `
         <tr>
             <td>${customer.id}</td>
@@ -219,9 +220,33 @@ async function deleteCustomer(id) {
 }
 
 // Employees Management
+let employeeFilters = {
+    role: '',
+    firstName: '',
+    email: '',
+    sort: ''
+};
+
 async function loadEmployees(page = 0) {
     try {
-        const response = await fetch(`/api/admin/employees/list?page=${page}&size=${pageSize}`);
+        // Build query parameters
+        let queryParams = `page=${page}&size=${pageSize}`;
+        
+        if (employeeFilters.role) {
+            queryParams += `&role=${encodeURIComponent(employeeFilters.role)}`;
+        }
+        if (employeeFilters.firstName) {
+            queryParams += `&firstName=${encodeURIComponent(employeeFilters.firstName)}`;
+        }
+        if (employeeFilters.email) {
+            queryParams += `&email=${encodeURIComponent(employeeFilters.email)}`;
+        }
+        if (employeeFilters.sort) {
+            const [property, direction] = employeeFilters.sort.split(',');
+            queryParams += `&sort=${property},${direction}`;
+        }
+        
+        const response = await fetch(`/api/admin/employees/list?${queryParams}`);
         const data = await response.json();
         currentPage.employees = page;
         renderEmployeesTable(data.content);
@@ -232,12 +257,30 @@ async function loadEmployees(page = 0) {
     }
 }
 
+function applyEmployeeFilters() {
+    employeeFilters.role = document.getElementById('employee-filter-role').value.trim();
+    employeeFilters.firstName = document.getElementById('employee-filter-firstName').value.trim();
+    employeeFilters.email = document.getElementById('employee-filter-email').value.trim();
+    employeeFilters.sort = document.getElementById('employee-sort-by').value;
+    loadEmployees(0);
+}
+
+function clearEmployeeFilters() {
+    document.getElementById('employee-filter-role').value = '';
+    document.getElementById('employee-filter-firstName').value = '';
+    document.getElementById('employee-filter-email').value = '';
+    document.getElementById('employee-sort-by').value = '';
+    employeeFilters = { role: '', firstName: '', email: '', sort: '' };
+    loadEmployees(0);
+}
+
 function renderEmployeesTable(employees) {
     const tbody = document.getElementById('employees-tbody');
     if (employees.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" class="loading">Kayıt bulunamadı.</td></tr>';
         return;
     }
+    
     tbody.innerHTML = employees.map(emp => `
         <tr>
             <td>${emp.id}</td>
@@ -256,17 +299,35 @@ function renderEmployeesTable(employees) {
 }
 
 function openEmployeeModal(employeeId = null) {
+    // Kullanıcının rolüne göre uygun rol seçeneklerini belirle
+    const isOwner = (currentUserRole === 'OWNER');
+    const isOwnerOrMaster = isOwner || isMasterUser;
+    let roleOptions = '<option value="">Seçiniz</option>';
+
+    // Sadece OWNER, OWNER rolünü görebilir ve atayabilir
+    if (isOwner) {
+        roleOptions += '<option value="OWNER">OWNER</option>';
+    }
+
+    // OWNER veya master ADMIN rolünü görebilir ve atayabilir
+    if (isOwnerOrMaster) {
+        roleOptions += '<option value="ADMIN">ADMIN</option>';
+    }
+
+    // Herkes TECHNICIAN ve MASTER ekleyebilir
+    roleOptions += `
+        <option value="TECHNICIAN">TECHNICIAN</option>
+        <option value="MASTER">MASTER</option>
+    `;
+
     const modal = createModal(
         employeeId ? 'Usta Düzenle' : 'Yeni Usta Ekle',
         `
             <form id="employee-form">
                 <div class="form-group">
-                    <label>Rol * (ADMIN, TECHNICIAN, MASTER)</label>
+                    <label>Rol *</label>
                     <select id="employee-role" required>
-                        <option value="">Seçiniz</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="TECHNICIAN">TECHNICIAN</option>
-                        <option value="MASTER">MASTER</option>
+                        ${roleOptions}
                     </select>
                 </div>
                 <div class="form-group">
@@ -394,9 +455,33 @@ async function deleteEmployee(id) {
 }
 
 // Cars Management
+let carFilters = {
+    make: '',
+    model: '',
+    year: '',
+    sort: ''
+};
+
 async function loadCars(page = 0) {
     try {
-        const response = await fetch(`/api/admin/cars/list?page=${page}&size=${pageSize}`);
+        // Build query parameters
+        let queryParams = `page=${page}&size=${pageSize}`;
+        
+        if (carFilters.make) {
+            queryParams += `&make=${encodeURIComponent(carFilters.make)}`;
+        }
+        if (carFilters.model) {
+            queryParams += `&model=${encodeURIComponent(carFilters.model)}`;
+        }
+        if (carFilters.year) {
+            queryParams += `&year=${encodeURIComponent(carFilters.year)}`;
+        }
+        if (carFilters.sort) {
+            const [property, direction] = carFilters.sort.split(',');
+            queryParams += `&sort=${property},${direction}`;
+        }
+        
+        const response = await fetch(`/api/admin/cars/list?${queryParams}`);
         const data = await response.json();
         currentPage.cars = page;
         renderCarsTable(data.content);
@@ -405,6 +490,23 @@ async function loadCars(page = 0) {
         console.error('Error loading cars:', error);
         showError('Arabalar yüklenirken bir hata oluştu.');
     }
+}
+
+function applyCarFilters() {
+    carFilters.make = document.getElementById('car-filter-make').value.trim();
+    carFilters.model = document.getElementById('car-filter-model').value.trim();
+    carFilters.year = document.getElementById('car-filter-year').value.trim();
+    carFilters.sort = document.getElementById('car-sort-by').value;
+    loadCars(0);
+}
+
+function clearCarFilters() {
+    document.getElementById('car-filter-make').value = '';
+    document.getElementById('car-filter-model').value = '';
+    document.getElementById('car-filter-year').value = '';
+    document.getElementById('car-sort-by').value = '';
+    carFilters = { make: '', model: '', year: '', sort: '' };
+    loadCars(0);
 }
 
 function renderCarsTable(cars) {
@@ -480,6 +582,10 @@ function openCarModal(carId = null) {
                     <label>Araba Resim URL</label>
                     <input type="text" id="car-carImageUrl">
                 </div>
+                <div class="form-group">
+                    <label>Marka Resim URL</label>
+                    <input type="text" id="car-makeImageUrl" placeholder="Marka logosu/fotoğrafı için URL">
+                </div>
             </form>
         `,
         () => saveCar(carId)
@@ -502,6 +608,7 @@ function openCarModal(carId = null) {
                     document.getElementById('car-stage2Price').value = car.stage2Price || '';
                     document.getElementById('car-stage3Price').value = car.stage3Price || '';
                     document.getElementById('car-carImageUrl').value = car.carImageUrl || '';
+                    document.getElementById('car-makeImageUrl').value = car.makeImageUrl || '';
                 }
             });
     }
@@ -520,7 +627,8 @@ async function saveCar(carId) {
         stage1Price: parseFloat(document.getElementById('car-stage1Price').value),
         stage2Price: parseFloat(document.getElementById('car-stage2Price').value),
         stage3Price: parseFloat(document.getElementById('car-stage3Price').value),
-        carImageUrl: document.getElementById('car-carImageUrl').value || null
+        carImageUrl: document.getElementById('car-carImageUrl').value || null,
+        makeImageUrl: document.getElementById('car-makeImageUrl').value || null
     };
 
     try {
@@ -575,15 +683,34 @@ async function deleteCar(id) {
 
 // Orders Management
 async function loadOrders(page = 0) {
+    const tbody = document.getElementById('orders-tbody');
+    if (!tbody) {
+        console.error('orders-tbody element not found');
+        return;
+    }
+    
     try {
+        tbody.innerHTML = '<tr><td colspan="9" class="loading">Yükleniyor...</td></tr>';
+        
         const response = await fetch(`/api/admin/orders/list?page=${page}&size=${pageSize}`);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error loading orders:', response.status, errorText);
+            showError(`Siparişler yüklenirken bir hata oluştu. (${response.status})`);
+            tbody.innerHTML = '<tr><td colspan="9" class="loading">Siparişler yüklenemedi. Status: ' + response.status + '</td></tr>';
+            return;
+        }
+        
         const data = await response.json();
+        console.log('Orders data:', data);
         currentPage.orders = page;
-        renderOrdersTable(data.content);
+        renderOrdersTable(data.content || []);
         renderPagination('orders-pagination', data, loadOrders);
     } catch (error) {
         console.error('Error loading orders:', error);
-        showError('Siparişler yüklenirken bir hata oluştu.');
+        showError('Siparişler yüklenirken bir hata oluştu: ' + error.message);
+        tbody.innerHTML = '<tr><td colspan="9" class="loading">Siparişler yüklenemedi: ' + error.message + '</td></tr>';
     }
 }
 
@@ -593,7 +720,10 @@ function renderOrdersTable(orders) {
         tbody.innerHTML = '<tr><td colspan="9" class="loading">Kayıt bulunamadı.</td></tr>';
         return;
     }
-    tbody.innerHTML = orders.map(order => `
+    tbody.innerHTML = orders.map(order => {
+        const statusClass = getStatusClass(order.status);
+        const statusText = getStatusText(order.status);
+        return `
         <tr>
             <td>${order.id}</td>
             <td>${order.orderNumber || ''}</td>
@@ -602,13 +732,15 @@ function renderOrdersTable(orders) {
             <td>${order.stageSelected || ''}</td>
             <td>${order.orderDate ? new Date(order.orderDate).toLocaleDateString('tr-TR') : '-'}</td>
             <td>${order.appointmentDate ? new Date(order.appointmentDate).toLocaleDateString('tr-TR') : '-'}</td>
-            <td>${order.status || ''}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
             <td class="btn-actions">
+                <button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${order.id}, '${order.status || ''}')">Durum Güncelle</button>
                 <button class="btn btn-edit" onclick="editOrder(${order.id})">Düzenle</button>
                 <button class="btn btn-delete" onclick="deleteOrder(${order.id})">Sil</button>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function openOrderModal(orderId = null) {
@@ -715,6 +847,98 @@ function editOrder(id) {
     openOrderModal(id);
 }
 
+function getStatusClass(status) {
+    if (!status) return 'status-beklemede';
+    const s = status.toUpperCase();
+    if (s === 'BEKLEMEDE' || s === 'PENDING') return 'status-beklemede';
+    if (s === 'ONAYLANDI' || s === 'CONFIRMED') return 'status-onaylandi';
+    if (s === 'HAZIRLANIYOR' || s === 'IN_PROGRESS') return 'status-hazirlaniyor';
+    if (s === 'TAMAMLANDI' || s === 'COMPLETED') return 'status-tamamlandi';
+    if (s === 'IPTAL' || s === 'CANCELLED') return 'status-iptal';
+    return 'status-beklemede';
+}
+
+function getStatusText(status) {
+    if (!status) return 'Beklemede';
+    const s = status.toUpperCase();
+    if (s === 'BEKLEMEDE' || s === 'PENDING') return 'Beklemede';
+    if (s === 'ONAYLANDI' || s === 'CONFIRMED') return 'Onaylandı';
+    if (s === 'HAZIRLANIYOR' || s === 'IN_PROGRESS') return 'Hazırlanıyor';
+    if (s === 'TAMAMLANDI' || s === 'COMPLETED') return 'Tamamlandı';
+    if (s === 'IPTAL' || s === 'CANCELLED') return 'İptal';
+    return status;
+}
+
+function updateOrderStatus(orderId, currentStatus) {
+    createModal(
+        'Sipariş Durumu Güncelle',
+        `
+            <form id="status-form">
+                <div class="form-group">
+                    <label>Yeni Durum:</label>
+                    <select id="order-status-select" required>
+                        <option value="">Seçiniz</option>
+                        <option value="BEKLEMEDE" ${currentStatus === 'BEKLEMEDE' ? 'selected' : ''}>Beklemede</option>
+                        <option value="ONAYLANDI" ${currentStatus === 'ONAYLANDI' ? 'selected' : ''}>Onaylandı</option>
+                        <option value="HAZIRLANIYOR" ${currentStatus === 'HAZIRLANIYOR' ? 'selected' : ''}>Hazırlanıyor</option>
+                        <option value="TAMAMLANDI" ${currentStatus === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
+                        <option value="IPTAL" ${currentStatus === 'IPTAL' ? 'selected' : ''}>İptal</option>
+                    </select>
+                </div>
+            </form>
+        `,
+        () => saveOrderStatus(orderId)
+    );
+}
+
+async function saveOrderStatus(orderId) {
+    const newStatus = document.getElementById('order-status-select').value;
+    if (!newStatus) {
+        showError('Lütfen bir durum seçin.');
+        return;
+    }
+
+    try {
+        // Önce mevcut order'ı al
+        const orderResponse = await fetch(`/api/admin/orders/list?page=0&size=100`);
+        const orderData = await orderResponse.json();
+        const order = orderData.content.find(o => o.id === orderId);
+        
+        if (!order) {
+            showError('Sipariş bulunamadı.');
+            return;
+        }
+
+        // Status'u güncelle
+        const updateData = {
+            customerId: order.customerId,
+            technicianId: order.technicianId,
+            carModelId: order.carModelId,
+            stageSelected: order.stageSelected,
+            status: newStatus,
+            appointmentDate: order.appointmentDate
+        };
+
+        const response = await fetch(`/api/admin/orders/update/${orderId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateData)
+        });
+
+        if (response.ok) {
+            closeModal();
+            loadOrders(currentPage.orders);
+            showSuccess('Sipariş durumu güncellendi.');
+        } else {
+            const error = await response.text();
+            showError('Hata: ' + error);
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        showError('Durum güncellenirken bir hata oluştu.');
+    }
+}
+
 async function deleteOrder(id) {
     if (!confirm('Bu siparişi silmek istediğinize emin misiniz?')) return;
 
@@ -737,17 +961,37 @@ async function deleteOrder(id) {
 
 // Invoices Management
 async function loadInvoices(page = 0) {
+    const tbody = document.getElementById('invoices-tbody');
+    if (!tbody) {
+        console.error('invoices-tbody element not found');
+        return;
+    }
+    
     try {
+        tbody.innerHTML = '<tr><td colspan="9" class="loading">Yükleniyor...</td></tr>';
+        
         const response = await fetch(`/api/admin/invoices/list?page=${page}&size=${pageSize}`);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error loading invoices:', response.status, errorText);
+            showError(`Faturalar yüklenirken bir hata oluştu. (${response.status})`);
+            tbody.innerHTML = '<tr><td colspan="9" class="loading">Faturalar yüklenemedi. Status: ' + response.status + '</td></tr>';
+            return;
+        }
+        
         const data = await response.json();
+        console.log('Invoices data:', data);
         currentPage.invoices = page;
-        renderInvoicesTable(data.content);
+        renderInvoicesTable(data.content || []);
         renderPagination('invoices-pagination', data, loadInvoices);
     } catch (error) {
         console.error('Error loading invoices:', error);
-        showError('Faturalar yüklenirken bir hata oluştu.');
+        showError('Faturalar yüklenirken bir hata oluştu: ' + error.message);
+        tbody.innerHTML = '<tr><td colspan="9" class="loading">Faturalar yüklenemedi: ' + error.message + '</td></tr>';
     }
 }
+
 
 function renderInvoicesTable(invoices) {
     const tbody = document.getElementById('invoices-tbody');

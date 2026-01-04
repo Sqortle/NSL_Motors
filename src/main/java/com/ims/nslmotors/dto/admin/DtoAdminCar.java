@@ -20,4 +20,5 @@ public class DtoAdminCar {
     private BigDecimal stage2Price;
     private BigDecimal stage3Price;
     private String carImageUrl;
+    private String makeImageUrl;
 }

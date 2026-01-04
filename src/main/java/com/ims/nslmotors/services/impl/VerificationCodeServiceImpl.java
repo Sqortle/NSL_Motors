@@ -1,6 +1,7 @@
 package com.ims.nslmotors.services.impl;
 
 import com.ims.nslmotors.model.Customer;
+import com.ims.nslmotors.model.Employee;
 import com.ims.nslmotors.model.VerificationCode;
 import com.ims.nslmotors.repository.VerificationCodeRepository;
 import com.ims.nslmotors.services.IVerificationCodeService;
@@ -69,6 +70,122 @@ public class VerificationCodeServiceImpl implements IVerificationCodeService {
 
         if (verificationCodeOpt.isPresent()) {
             VerificationCode verificationCode = verificationCodeOpt.get();
+            if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
+                verificationCode.setIsUsed(true);
+                verificationCodeRepository.save(verificationCode);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public String generateAndSaveVerificationCodeForEmployee(Employee employee, String purpose) {
+        // 6 haneli rastgele kod oluştur
+        String code = generateRandomCode();
+
+        // Yeni VerificationCode entity oluştur
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmployee(employee);
+        verificationCode.setCode(code);
+        verificationCode.setIsUsed(false);
+        verificationCode.setPurpose(purpose);
+        verificationCode.setCreatedAt(LocalDateTime.now());
+        verificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(CODE_EXPIRY_MINUTES));
+
+        // Veritabanına kaydet
+        verificationCodeRepository.save(verificationCode);
+
+        return code;
+    }
+
+    @Override
+    public boolean verifyCodeForEmployee(Long employeeId, String code, String purpose) {
+        LocalDateTime now = LocalDateTime.now();
+        Optional<VerificationCode> verificationCodeOpt = verificationCodeRepository
+                .findByEmployeeIdAndCodeAndIsUsedFalseAndExpiresAtAfter(employeeId, code, now);
+
+        if (verificationCodeOpt.isEmpty()) {
+            return false;
+        }
+
+        VerificationCode verificationCode = verificationCodeOpt.get();
+        // Purpose kontrolü
+        if (purpose != null && !purpose.equals(verificationCode.getPurpose())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean verifyCodeByEmail(String email, String code, String purpose) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        // Önce customer için kontrol et
+        Optional<VerificationCode> customerCodeOpt = verificationCodeRepository
+                .findByCustomerEmailAndCodeAndIsUsedFalseAndExpiresAtAfter(email, code, now);
+        
+        if (customerCodeOpt.isPresent()) {
+            VerificationCode verificationCode = customerCodeOpt.get();
+            if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
+                return true;
+            }
+        }
+        
+        // Sonra employee için kontrol et
+        Optional<VerificationCode> employeeCodeOpt = verificationCodeRepository
+                .findByEmployeeEmailAndCodeAndIsUsedFalseAndExpiresAtAfter(email, code, now);
+        
+        if (employeeCodeOpt.isPresent()) {
+            VerificationCode verificationCode = employeeCodeOpt.get();
+            if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public void markCodeAsUsedForEmployee(Long employeeId, String code, String purpose) {
+        LocalDateTime now = LocalDateTime.now();
+        Optional<VerificationCode> verificationCodeOpt = verificationCodeRepository
+                .findByEmployeeIdAndCodeAndIsUsedFalseAndExpiresAtAfter(employeeId, code, now);
+
+        if (verificationCodeOpt.isPresent()) {
+            VerificationCode verificationCode = verificationCodeOpt.get();
+            if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
+                verificationCode.setIsUsed(true);
+                verificationCodeRepository.save(verificationCode);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void markCodeAsUsedByEmail(String email, String code, String purpose) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        // Önce customer için kontrol et
+        Optional<VerificationCode> customerCodeOpt = verificationCodeRepository
+                .findByCustomerEmailAndCodeAndIsUsedFalseAndExpiresAtAfter(email, code, now);
+        
+        if (customerCodeOpt.isPresent()) {
+            VerificationCode verificationCode = customerCodeOpt.get();
+            if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
+                verificationCode.setIsUsed(true);
+                verificationCodeRepository.save(verificationCode);
+                return;
+            }
+        }
+        
+        // Sonra employee için kontrol et
+        Optional<VerificationCode> employeeCodeOpt = verificationCodeRepository
+                .findByEmployeeEmailAndCodeAndIsUsedFalseAndExpiresAtAfter(email, code, now);
+        
+        if (employeeCodeOpt.isPresent()) {
+            VerificationCode verificationCode = employeeCodeOpt.get();
             if (purpose == null || purpose.equals(verificationCode.getPurpose())) {
                 verificationCode.setIsUsed(true);
                 verificationCodeRepository.save(verificationCode);

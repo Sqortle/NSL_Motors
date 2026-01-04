@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Doğrulama - NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Racing+Sans+One&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <section class="admin-auth-section">
+        <div class="container">
+            <div class="admin-auth-container">
+                <div class="admin-auth-card glass-card">
+                    <h2 class="admin-auth-title">
+                        <span style="color: var(--color-white);">Admin</span>
+                        <span style="color: var(--color-brg-light);">Doğrulama</span>
+                    </h2>
+
+                    <!-- Email Bilgisi -->
+                    <div th:if="${email}" class="alert alert-success">
+                        <span>Doğrulama kodu <strong th:text="${email}"></strong> adresine gönderildi.</span>
+                    </div>
+
+                    <!-- Hata Mesajı -->
+                    <div th:if="${errorMessage}" class="alert alert-error">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <form class="admin-auth-form" method="post" th:action="@{/admin/auth/verify}"
+                        th:object="${verificationDto}">
+                        <!-- Email hidden field olarak gönder -->
+                        <input type="hidden" th:field="*{email}">
+
+                        <div class="form-group">
+                            <label for="verificationCode" class="form-label">Doğrulama Kodu</label>
+                            <input type="text" id="verificationCode" th:field="*{verificationCode}"
+                                class="form-input verification-code-input" placeholder="000000" maxlength="6"
+                                pattern="[0-9]{6}" required>
+                            <div th:if="${#fields.hasErrors('verificationCode')}" class="error-message">
+                                <span th:errors="*{verificationCode}"></span>
+                            </div>
+                            <small class="input-hint">
+                                6 haneli doğrulama kodunu giriniz
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-verify">
+                            Doğrula ve Giriş Yap
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p class="auth-footer-text">
+                            Kod gelmedi mi?
+                            <a th:href="@{/admin/auth/login}" class="auth-link">Tekrar giriş yapın</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .admin-auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--color-black) 0%, var(--color-black-soft) 100%);
+            position: relative;
+        }
+
+        .admin-auth-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center,
+                    rgba(0, 102, 68, 0.1) 0%,
+                    transparent 70%);
+            pointer-events: none;
+        }
+
+        .admin-auth-container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-auth-card {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            position: relative;
+            border: 1px solid rgba(0, 102, 68, 0.2);
+        }
+
+        .admin-auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--color-brg-light),
+                    transparent);
+        }
+
+        .admin-auth-title {
+            font-family: var(--font-accent);
+            font-size: 2rem;
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .admin-auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: var(--color-gray-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(0, 102, 68, 0.3);
+            border-radius: var(--radius-sm);
+            color: var(--color-white);
+            font-family: var(--font-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-input:hover {
+            border-color: rgba(0, 102, 68, 0.5);
+            background: rgba(0, 102, 68, 0.05);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-brg-light);
+            background: rgba(0, 102, 68, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.12);
+        }
+
+        .verification-code-input {
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 0.5rem;
+            font-weight: 600;
+        }
+
+        .input-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: -4px;
+        }
+
+        .btn-verify {
+            width: 100%;
+            margin-top: var(--spacing-sm);
+            padding: 13px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 68, 0.3);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(0, 102, 68, 0.2);
+            color: var(--color-brg-light);
+            border: 1px solid rgba(0, 102, 68, 0.4);
+        }
+
+        .alert-info {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: -4px;
+        }
+
+        .auth-footer {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(0, 102, 68, 0.2);
+        }
+
+        .auth-footer-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .auth-link {
+            color: var(--color-brg-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--color-brg-glow);
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-auth-container {
+                max-width: 380px;
+            }
+
+            .admin-auth-card {
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+
+            .form-input {
+                padding: 11px 14px;
+                font-size: 0.9rem;
+            }
+
+            .verification-code-input {
+                font-size: 1.3rem;
+            }
+
+            .btn-verify {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-auth-container {
+                max-width: 100%;
+            }
+
+            .admin-auth-card {
+                padding: var(--spacing-md);
+            }
+
+            .form-input {
+                padding: 10px 12px;
+            }
+
+            .verification-code-input {
+                font-size: 1.2rem;
+                letter-spacing: 0.3rem;
+            }
+
+            .btn-verify {
+                padding: 11px 18px;
+            }
+        }
+    </style>
+</body>
+
+</html>

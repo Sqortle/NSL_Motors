@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface AdminCarRepository extends JpaRepository<Car, Long>,
         JpaSpecificationExecutor<Car> { // KRİTİK: Eklendi
 
-
+    java.util.List<Car> findByMake(String make);
+    
+    void deleteByMakeIn(java.util.List<String> makes);
 }

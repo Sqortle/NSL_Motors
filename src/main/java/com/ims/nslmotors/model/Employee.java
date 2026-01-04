@@ -17,7 +17,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Rol, String olarak tutulur: "ADMIN", "TECHNICIAN", "MASTER"
+    // Rol, String olarak tutulur: "OWNER", "ADMIN", "TECHNICIAN", "MASTER"
     @Column(name = "role", length = 50, nullable = false)
     private String role;
 
@@ -46,7 +46,16 @@ public class Employee {
     @Column(name = "tc_kimlik_no", length = 11, unique = true)
     private String tcKimlikNo;
 
+    // Çalışanın bağlı olduğu dükkan
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
     // KRİTİK DÜZELTME: mappedBy de?eri, Order.java'daki alan ad?na ("technician") ayarland?.
     @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> assignedOrders;
+
+    // Teknisyene atanan randevular
+    @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
 }

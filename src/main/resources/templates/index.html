@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+
 <body>
     <div th:fragment="content">
         <!-- Hero Section -->
@@ -14,7 +15,8 @@
                         <span class="title-line accent">Tuning</span>
                         <span class="title-line">Hizmetleri</span>
                     </h1>
-                    <p class="hero-subtitle">Aracınızın gerçek potansiyelini keşfedin. Stage 1, 2 ve 3 tuning paketleri ile performansınızı maksimuma çıkarın.</p>
+                    <p class="hero-subtitle">Aracınızın gerçek potansiyelini keşfedin. Stage 1, 2 ve 3 tuning paketleri
+                        ile performansınızı maksimuma çıkarın.</p>
                     <div class="hero-buttons">
                         <a th:href="@{/catalog}" class="btn btn-primary">Kataloğu İncele</a>
                         <a th:href="@{/contact}" class="btn btn-secondary">İletişime Geç</a>
@@ -32,22 +34,22 @@
                 </div>
                 <div class="features-grid">
                     <div class="feature-card glass-card">
-                        <div class="feature-icon">⚡</div>
+                        <div class="feature-icon"></div>
                         <h3 class="feature-title">Güç Artışı</h3>
                         <p class="feature-text">Stage 1'den Stage 3'e kadar özelleştirilebilir güç paketleri</p>
                     </div>
                     <div class="feature-card glass-card">
-                        <div class="feature-icon">🔧</div>
+                        <div class="feature-icon"></div>
                         <h3 class="feature-title">Profesyonel Ekip</h3>
                         <p class="feature-text">Alanında uzman teknik ekibimiz ile güvenli tuning</p>
                     </div>
                     <div class="feature-card glass-card">
-                        <div class="feature-icon">🏆</div>
+                        <div class="feature-icon"></div>
                         <h3 class="feature-title">Kalite Garantisi</h3>
                         <p class="feature-text">Tüm işlemlerimizde kalite ve güvenlik önceliğimiz</p>
                     </div>
                     <div class="feature-card glass-card">
-                        <div class="feature-icon">📊</div>
+                        <div class="feature-icon"></div>
                         <h3 class="feature-title">Detaylı Raporlama</h3>
                         <p class="feature-text">Öncesi ve sonrası performans analizleri ile şeffaf süreç</p>
                     </div>
@@ -63,12 +65,14 @@
                     <p class="section-subtitle">En çok tercih edilen tuning paketleri</p>
                 </div>
                 <div class="cars-grid">
-                    <div class="car-card glass-card" th:each="makeEntry : ${catalog}" th:if="${makeEntry.value.size() > 0}">
+                    <div class="car-card glass-card" th:each="makeEntry : ${catalog}"
+                        th:if="${makeEntry.value.size() > 0}">
                         <div class="car-card-header">
                             <h3 class="car-make" th:text="${makeEntry.key}">Marka</h3>
                         </div>
                         <div class="car-models">
-                            <div class="car-model-item" th:each="car, iterStat : ${makeEntry.value}" th:if="${iterStat.index < 3}">
+                            <div class="car-model-item" th:each="car, iterStat : ${makeEntry.value}"
+                                th:if="${iterStat.index < 3}">
                                 <span class="model-name" th:text="${car.model}">Model</span>
                                 <span class="model-year" th:text="${car.year}">Yıl</span>
                             </div>
@@ -83,7 +87,7 @@
         <section class="cta-section">
             <div class="container">
                 <div class="cta-content glass-card">
-                    <h2 class="cta-title">Aracınızı Hazır mısınız?</h2>
+                    <h2 class="cta-title">Aracınızı Yükseltmeye Hazır mısınız?</h2>
                     <p class="cta-text">Hemen kataloğumuza göz atın ve aracınız için en uygun tuning paketini seçin.</p>
                     <a th:href="@{/catalog}" class="btn btn-primary btn-large">Kataloğu İncele</a>
                 </div>
@@ -91,4 +95,5 @@
         </section>
     </div>
 </body>
+
 </html>

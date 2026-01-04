@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+
 <body>
     <div th:fragment="content">
         <section class="page-header">
@@ -18,7 +19,7 @@
                             <span class="contact-icon">📧</span>
                             <div>
                                 <h4>Email</h4>
-                                <p>info@nslmotors.com</p>
+                                <p>imsbusiness00@gmail.com</p>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -38,6 +39,14 @@
                     </div>
                     <div class="contact-form-container glass-card">
                         <h2 class="contact-title">Mesaj Gönderin</h2>
+                        <div th:if="${success}" class="alert alert-success"
+                            style="background-color: rgba(0, 200, 0, 0.2); color: #0f5132; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 200, 0, 0.3);">
+                            <span th:text="${success}"></span>
+                        </div>
+                        <div th:if="${error}" class="alert alert-error"
+                            style="background-color: rgba(255, 0, 0, 0.2); color: #842029; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
+                            <span th:text="${error}"></span>
+                        </div>
                         <form class="contact-form" method="post" th:action="@{/contact}">
                             <div class="form-group">
                                 <label for="name">Ad Soyad</label>
@@ -59,4 +68,5 @@
         </section>
     </div>
 </body>
+
 </html>

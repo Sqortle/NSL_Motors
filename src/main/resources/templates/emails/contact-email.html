@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSL Motors - İletişim Mesajı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #006644 0%, #004d33 100%);
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 3px solid #00ff88;
+        }
+
+        .logo {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .logo-text {
+            color: #ffffff;
+        }
+
+        .logo-accent {
+            color: #006644;
+            text-shadow: 0 0 10px rgba(0, 102, 68, 0.5);
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+
+        .email-body {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .info-box {
+            background: rgba(0, 102, 68, 0.1);
+            border-left: 4px solid #006644;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #00ff88;
+            min-width: 100px;
+            margin-right: 15px;
+        }
+
+        .info-value {
+            color: #ffffff;
+            flex: 1;
+        }
+
+        .message-box {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(0, 102, 68, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .message-label {
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .message-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .email-footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 102, 68, 0.2);
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            margin-top: 15px;
+        }
+
+        .footer-link {
+            color: #00ff88;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 13px;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 102, 68, 0.3), transparent);
+            margin: 25px 0;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-header {
+                padding: 25px 20px;
+            }
+
+            .email-body {
+                padding: 25px 20px;
+            }
+
+            .email-footer {
+                padding: 25px 20px;
+            }
+
+            .logo {
+                font-size: 26px;
+            }
+
+            .info-row {
+                flex-direction: column;
+            }
+
+            .info-label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 8px;">
+                <tr>
+                    <td align="center"
+                        style="font-family: 'Arial Black', 'Arial Bold', Arial, sans-serif; font-size: 32px; font-weight: 900; letter-spacing: 3px;">
+                        <span style="color: #ffffff !important;">NSL</span><span
+                            style="color: #00ff88 !important;">MOTORS</span>
+                    </td>
+                </tr>
+            </table>
+            <div class="tagline">PERFORMANCE TUNING EXPERTS</div>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <h2 class="section-title">Yeni İletişim Formu Mesajı</h2>
+
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="info-label">Gönderen:</span>
+                    <span class="info-value">{{senderName}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{senderEmail}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tarih:</span>
+                    <span class="info-value">{{sendDate}}</span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="message-box">
+                <span class="message-label">Mesaj İçeriği:</span>
+                <div class="message-content">{{messageContent}}</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p class="footer-text">
+                Bu mesaj NSL Motors web sitesi iletişim formundan gönderilmiştir.
+            </p>
+            <p class="footer-text">
+                © 2024 NSL Motors. Tüm hakları saklıdır.
+            </p>
+            <div class="footer-links">
+                <a href="http://localhost:8080" class="footer-link">Web Sitesi</a>
+                <a href="http://localhost:8080/contact" class="footer-link">İletişim</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

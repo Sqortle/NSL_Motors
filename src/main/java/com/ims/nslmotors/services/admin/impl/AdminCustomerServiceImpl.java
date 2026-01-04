@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification; // Dinamik filtreleme i?in
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,16 +145,21 @@ public class AdminCustomerServiceImpl implements IAdminCustomerService {
 
     }
 
+    @Transactional
     public void deleteCustomer(Long id){
-        if (!adminCustomerRepository.existsById(id)) {
-            // Var olmayan bir ID silinmeye çalışılırsa hata fırlat
-            throw new NoSuchElementException("ID " + id + " ile müşteri bulunamadığı için silinemedi.");
+        Customer customer = adminCustomerRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ID " + id + " ile müşteri bulunamadığı için silinemedi."));
+
+        // Verification codes'ları yükle (LAZY loading için)
+        if (customer.getVerificationCodes() != null) {
+            customer.getVerificationCodes().size(); // Lazy loading trigger
         }
 
-        // 2. Silme işlemini gerçekleştir
-        // NOT: Customer Entity'nizde Order Entity'sine olan ilişki (cascade = CascadeType.ALL, orphanRemoval = true)
+        // Customer entity'sinde VerificationCode ilişkisi cascade = CascadeType.ALL, orphanRemoval = true
+        // olduğu için, Customer silindiğinde verification codes'lar otomatik silinecek.
+        // NOT: Customer Entity'de Order Entity'sine olan ilişki (cascade = CascadeType.ALL, orphanRemoval = true)
         // olduğu için, bu müşteriye ait tüm siparişler de otomatik olarak silinecektir.
-        adminCustomerRepository.deleteById(id);
+        adminCustomerRepository.delete(customer);
     }
 
 

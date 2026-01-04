@@ -17,8 +17,10 @@ public class DtoCustomerCar {
     private Integer stage2Hp;
     private Integer stage3Hp;
     private String carImageUrl;
+    private String makeImageUrl;
 
     // Müşterinin göreceği fiyatlar
     private BigDecimal stage1Price;
     private BigDecimal stage2Price;
+    private BigDecimal stage3Price;
 }

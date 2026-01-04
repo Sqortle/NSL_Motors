@@ -35,4 +35,12 @@ public class Customer {
     // İlişki: Customer'a ait siparişler
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> customerOrders; // Kolon ismiyle eşleşmiyor, bu doğru.
+
+    // İlişki: Customer'a ait doğrulama kodları
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VerificationCode> verificationCodes;
+
+    // İlişki: Customer'a ait randevular
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
 }

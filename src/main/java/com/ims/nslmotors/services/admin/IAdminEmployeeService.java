@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IAdminEmployeeService {
-    Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable);
+    Page<DtoAdminEmployee> getEmployeesWithPaginationAndSearch(DtoAdminEmployee dtoAdminEmployee, Pageable pageable, String currentUserRole);
 
     DtoAdminEmployee createEmployee(DtoAdminEmployeeIU employeeCreationDto);
 

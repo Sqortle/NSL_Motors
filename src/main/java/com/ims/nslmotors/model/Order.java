@@ -47,6 +47,11 @@ public class Order {
     @Column(name = "status", length = 50, nullable = false)
     private String status;
 
+    // İlişki: One-to-One (Randevu)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
     // İlişki: One-to-One (Fatura)
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Invoice invoice;

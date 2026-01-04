@@ -51,7 +51,22 @@
                     <span class="admin-badge">Admin Panel</span>
                 </h1>
                 <div class="admin-actions">
-                    <span style="color: var(--color-gray-light); margin-right: 15px;" th:text="${adminEmail}"></span>
+                    <div class="user-info-container">
+                        <div class="user-info">
+                            <span class="user-name" 
+                                  th:text="${(employeeFirstName != null and employeeLastName != null) ? (employeeFirstName + ' ' + employeeLastName) : (adminEmail != null ? adminEmail : 'Admin User')}">
+                                Admin User
+                            </span>
+                            <span class="user-role" 
+                                  th:classappend="${employeeRole == 'OWNER'} ? 'role-owner' : 
+                                                  (${employeeRole == 'ADMIN'} ? 'role-admin' : 
+                                                  (${employeeRole == 'MASTER'} ? 'role-master' : 
+                                                  (${employeeRole == 'TECHNICIAN'} ? 'role-technician' : 'role-technician')))"
+                                  th:text="${employeeRole != null ? employeeRole : 'ADMIN'}">
+                                ROLE
+                            </span>
+                        </div>
+                    </div>
                     <a th:href="@{/admin/auth/logout}" class="btn btn-secondary">Çıkış Yap</a>
                     <a th:href="@{/}" class="btn btn-secondary" style="margin-left: 10px;">Ana Sayfaya Dön</a>
                 </div>
@@ -73,7 +88,9 @@
             <div class="tab-content active" id="customers-tab">
                 <div class="module-header">
                     <h2>Kullanıcı Yönetimi</h2>
-                    <button class="btn btn-primary" onclick="openCustomerModal()">Yeni Kullanıcı Ekle</button>
+                    <button class="btn btn-primary" onclick="openCustomerModal()">
+                        Yeni Kullanıcı Ekle
+                    </button>
                 </div>
                 <div class="table-container">
                     <table class="admin-table" id="customers-table">
@@ -101,7 +118,50 @@
             <div class="tab-content" id="employees-tab">
                 <div class="module-header">
                     <h2>Usta Yönetimi</h2>
-                    <button class="btn btn-primary" onclick="openEmployeeModal()">Yeni Usta Ekle</button>
+                    <button class="btn btn-primary" onclick="openEmployeeModal()">
+                        Yeni Usta Ekle
+                    </button>
+                </div>
+                <!-- Employees Filter Section -->
+                <div class="filter-section" style="background: rgba(26, 26, 26, 0.6); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Rol</label>
+                        <select id="employee-filter-role" style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                            <option value="">Tüm Roller</option>
+                            <!-- Sadece OWNER OWNER rolünü görebilir -->
+                            <option value="OWNER" th:if="${session.employeeRole == 'OWNER'}">OWNER</option>
+                            <!-- OWNER ve master ADMIN rolünü görebilir -->
+                            <option value="ADMIN" th:if="${session.employeeRole == 'OWNER' or (session.isMasterUser != null and session.isMasterUser)}">ADMIN</option>
+                            <option value="TECHNICIAN">TECHNICIAN</option>
+                            <option value="MASTER">MASTER</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Ad</label>
+                        <input type="text" id="employee-filter-firstName" placeholder="Ad ara..." style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                    </div>
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Email</label>
+                        <input type="text" id="employee-filter-email" placeholder="Email ara..." style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Sırala</label>
+                        <select id="employee-sort-by" style="padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                            <option value="">Varsayılan</option>
+                            <option value="role,asc">Rol (A-Z)</option>
+                            <option value="role,desc">Rol (Z-A)</option>
+                            <option value="firstName,asc">Ad (A-Z)</option>
+                            <option value="firstName,desc">Ad (Z-A)</option>
+                            <option value="lastName,asc">Soyad (A-Z)</option>
+                            <option value="lastName,desc">Soyad (Z-A)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button class="btn btn-primary" onclick="applyEmployeeFilters()" style="padding: 8px 20px;">Filtrele</button>
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button class="btn btn-secondary" onclick="clearEmployeeFilters()" style="padding: 8px 20px;">Temizle</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table class="admin-table" id="employees-table">
@@ -132,6 +192,39 @@
                 <div class="module-header">
                     <h2>Araba Yönetimi</h2>
                     <button class="btn btn-primary" onclick="openCarModal()">Yeni Araba Ekle</button>
+                </div>
+                <!-- Cars Filter Section -->
+                <div class="filter-section" style="background: rgba(26, 26, 26, 0.6); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Marka</label>
+                        <input type="text" id="car-filter-make" placeholder="Marka ara..." style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                    </div>
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Model</label>
+                        <input type="text" id="car-filter-model" placeholder="Model ara..." style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                    </div>
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Yıl</label>
+                        <input type="number" id="car-filter-year" placeholder="Yıl ara..." style="width: 100%; padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <label style="color: var(--color-gray-light); margin-bottom: 5px; display: block;">Sırala</label>
+                        <select id="car-sort-by" style="padding: 8px; background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(0, 102, 68, 0.3); border-radius: 4px; color: var(--color-white);">
+                            <option value="">Varsayılan</option>
+                            <option value="make,asc">Marka (A-Z)</option>
+                            <option value="make,desc">Marka (Z-A)</option>
+                            <option value="model,asc">Model (A-Z)</option>
+                            <option value="model,desc">Model (Z-A)</option>
+                            <option value="year,desc">Yıl (Yüksek-Düşük)</option>
+                            <option value="year,asc">Yıl (Düşük-Yüksek)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button class="btn btn-primary" onclick="applyCarFilters()" style="padding: 8px 20px;">Filtrele</button>
+                    </div>
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button class="btn btn-secondary" onclick="clearCarFilters()" style="padding: 8px 20px;">Temizle</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table class="admin-table" id="cars-table">
@@ -224,6 +317,11 @@
     <!-- Modals will be inserted here by JavaScript -->
     <div id="modal-container"></div>
 
+    <script th:inline="javascript">
+        // Session'dan gelen rol bilgisini JavaScript'e aktar
+        const currentUserRole = /*[[${session.employeeRole != null ? session.employeeRole : 'ADMIN'}]]*/ 'ADMIN';
+        const isMasterUser = /*[[${session.isMasterUser != null ? session.isMasterUser : false}]]*/ false;
+    </script>
     <script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

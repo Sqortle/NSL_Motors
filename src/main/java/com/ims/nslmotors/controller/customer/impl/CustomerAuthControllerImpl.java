@@ -40,6 +40,13 @@ public class CustomerAuthControllerImpl implements ICustomerAuthController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
 
+        // Şifre eşleşme kontrolü
+        if (registrationDto.getPassword() != null && registrationDto.getConfirmPassword() != null) {
+            if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
+                bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "Şifreler eşleşmiyor.");
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registrationDto", bindingResult);
             redirectAttributes.addFlashAttribute("registrationDto", registrationDto);
@@ -76,7 +83,8 @@ public class CustomerAuthControllerImpl implements ICustomerAuthController {
     public String handleRegisterVerification(
             @Valid @ModelAttribute("verificationDto") DtoCustomerVerification verificationDto,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.verificationDto", bindingResult);
@@ -85,10 +93,14 @@ public class CustomerAuthControllerImpl implements ICustomerAuthController {
         }
 
         try {
-            customerAuthService.verifyAndActivateAccount(verificationDto.getEmail(), verificationDto.getVerificationCode());
+            DtoCustomerProfile profile = customerAuthService.verifyAndActivateAccount(verificationDto.getEmail(), verificationDto.getVerificationCode());
+            // Session'a kullanıcı bilgilerini ekle (otomatik giriş)
+            session.setAttribute("customerId", profile.getId());
+            session.setAttribute("customerName", profile.getFirstName() + " " + profile.getLastName());
+            session.setAttribute("customerEmail", profile.getEmail());
             redirectAttributes.addFlashAttribute("successMessage", 
-                "Hesabınız başarıyla doğrulandı! Giriş yapabilirsiniz.");
-            return "redirect:/customer/auth/login";
+                "Hesabınız başarıyla doğrulandı! Hoş geldiniz.");
+            return "redirect:/"; // Ana sayfaya yönlendir
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("verificationDto", verificationDto);
@@ -164,7 +176,7 @@ public class CustomerAuthControllerImpl implements ICustomerAuthController {
             session.setAttribute("customerId", profile.getId());
             session.setAttribute("customerName", profile.getFirstName() + " " + profile.getLastName());
             session.setAttribute("customerEmail", profile.getEmail());
-            return "redirect:/customer/profile";
+            return "redirect:/"; // Ana sayfaya yönlendir
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("verificationDto", verificationDto);

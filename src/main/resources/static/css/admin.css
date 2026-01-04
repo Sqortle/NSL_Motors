@@ -64,7 +64,99 @@
 
 .admin-actions {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+    align-items: center;
+}
+
+/* User Info Styles */
+.user-info-container {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.user-info-container:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 102, 68, 0.3);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-name {
+    color: var(--color-white);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    font-family: var(--font-primary);
+}
+
+.user-role {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: var(--font-primary);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/* Role Colors - Sade ve Okunabilir */
+.role-owner {
+    background: rgba(255, 193, 7, 0.15);
+    color: #FFC107;
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.role-owner:hover {
+    background: rgba(255, 193, 7, 0.25);
+    border-color: rgba(255, 193, 7, 0.5);
+}
+
+.role-admin {
+    background: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+    border-color: rgba(244, 67, 54, 0.3);
+}
+
+.role-admin:hover {
+    background: rgba(244, 67, 54, 0.25);
+    border-color: rgba(244, 67, 54, 0.5);
+}
+
+.role-master {
+    background: rgba(156, 39, 176, 0.15);
+    color: #AB47BC;
+    border-color: rgba(156, 39, 176, 0.3);
+}
+
+.role-master:hover {
+    background: rgba(156, 39, 176, 0.25);
+    border-color: rgba(156, 39, 176, 0.5);
+}
+
+.role-technician {
+    background: rgba(0, 150, 136, 0.15);
+    color: #26A69A;
+    border-color: rgba(0, 150, 136, 0.3);
+}
+
+.role-technician:hover {
+    background: rgba(0, 150, 136, 0.25);
+    border-color: rgba(0, 150, 136, 0.5);
 }
 
 /* Admin Tabs */
@@ -388,6 +480,105 @@
     min-height: 100px;
 }
 
+/* Select and Option Styling */
+.form-group select,
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23006644' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.form-group select:hover,
+select:hover {
+    border-color: var(--color-brg-light);
+}
+
+/* Option Styling - Better visibility */
+.form-group select option,
+select option {
+    background: var(--color-black-lighter);
+    color: var(--color-white);
+    padding: 12px;
+    font-weight: 500;
+}
+
+.form-group select option:hover,
+select option:hover {
+    background: var(--color-brg-dark);
+    color: var(--color-brg-glow);
+}
+
+.form-group select option:checked,
+select option:checked {
+    background: var(--color-brg);
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+/* Filter Section Select Styling */
+.filter-section select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background-color: rgba(26, 26, 26, 0.9);
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23006644' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+    transition: all 0.3s ease;
+}
+
+.filter-section select:hover {
+    background-color: rgba(0, 102, 68, 0.1);
+    border-color: var(--color-brg-light);
+}
+
+.filter-section select:focus {
+    background-color: rgba(0, 102, 68, 0.15);
+    border-color: var(--color-brg-light);
+    box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.2);
+}
+
+.filter-section select option {
+    background: var(--color-black-lighter);
+    color: var(--color-white);
+    padding: 12px;
+    font-weight: 500;
+    border: none;
+}
+
+.filter-section select option:hover {
+    background: var(--color-brg-dark);
+    color: var(--color-brg-glow);
+}
+
+.filter-section select option:checked {
+    background: linear-gradient(135deg, var(--color-brg) 0%, var(--color-brg-light) 100%);
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+/* Input Styling for Filter Section */
+.filter-section input {
+    transition: all 0.3s ease;
+}
+
+.filter-section input:hover {
+    border-color: var(--color-brg-light);
+}
+
+.filter-section input:focus {
+    background-color: rgba(0, 102, 68, 0.05);
+    border-color: var(--color-brg-light);
+    box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.2);
+}
+
 .modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -415,11 +606,75 @@
     border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
+/* Status Badge Styles */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.status-beklemede {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-onaylandi {
+    background: rgba(0, 102, 68, 0.2);
+    color: var(--color-brg-light);
+    border: 1px solid rgba(0, 102, 68, 0.3);
+}
+
+.status-hazirlaniyor {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196f3;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.status-tamamlandi {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-iptal {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .admin-header-content {
         flex-direction: column;
         gap: 15px;
+    }
+
+    .admin-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .user-info-container {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-info {
+        align-items: center;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+    }
+
+    .user-role {
+        font-size: 0.7rem;
+        padding: 2px 8px;
     }
 
     .admin-tabs {

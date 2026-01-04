@@ -9,13 +9,21 @@ import java.time.LocalDateTime;
 public interface IEmployeeOrderService {
 
     /**
-     * Teknisyene ait, bug?n ve sonras? i?in atanm?? sipari?leri sayfal? olarak ?eker.
+     * Teknisyene ait, bugün ve sonrası için atanmış siparişleri sayfalı olarak çeker.
      * @param technicianId Mevcut teknisyenin ID'si.
-     * @param pageable Sayfalama bilgisi (sayfa no, boyut, s?ralama).
-     * @return DtoEmployeeOrder listesinin sayfal? g?r?n?m?.
+     * @param pageable Sayfalama bilgisi (sayfa no, boyut, sıralama).
+     * @return DtoEmployeeOrder listesinin sayfalı görünümü.
      */
     Page<DtoEmployeeOrder> getPagedFutureOrdersForTechnician(
             Long technicianId,
             Pageable pageable
     );
+
+    /**
+     * Sipariş durumunu günceller (sadece kendisine atanan siparişler için).
+     * @param orderId Sipariş ID'si.
+     * @param technicianId Teknisyen ID'si (yetki kontrolü için).
+     * @param newStatus Yeni durum.
+     */
+    void updateOrderStatus(Long orderId, Long technicianId, String newStatus);
 }

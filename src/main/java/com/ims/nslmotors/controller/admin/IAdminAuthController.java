@@ -1,6 +1,7 @@
 package com.ims.nslmotors.controller.admin;
 
 import com.ims.nslmotors.dto.admin.DtoAdminLogin;
+import com.ims.nslmotors.dto.admin.DtoAdminVerification;
 import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +15,13 @@ public interface IAdminAuthController {
     String showLoginPage(Model model);
     
     @PostMapping("/login")
-    String handleLogin(@Valid DtoAdminLogin loginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, jakarta.servlet.http.HttpSession session);
+    String handleLogin(DtoAdminLogin loginDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, jakarta.servlet.http.HttpSession session);
+    
+    @GetMapping("/verify")
+    String showVerifyPage(Model model, jakarta.servlet.http.HttpSession session);
+    
+    @PostMapping("/verify")
+    String handleVerify(@Valid DtoAdminVerification verificationDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, jakarta.servlet.http.HttpSession session);
     
     @GetMapping("/logout")
     String logout(jakarta.servlet.http.HttpSession session);

@@ -4,11 +4,14 @@ import com.ims.nslmotors.controller.admin.IAdminCustomerController;
 import com.ims.nslmotors.dto.admin.DtoAdminCustomer;
 import com.ims.nslmotors.dto.admin.DtoAdminCustomerIU; // Yeni import
 import com.ims.nslmotors.services.admin.IAdminCustomerService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid; // Validation'lar? ?al??t?rmak i?in
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus; // HTTP 201 Created d?nd?rmek i?in
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // PostMapping ve RequestBody i?in
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*; // PostMapping ve RequestBody 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/customers") // Yolu /api/admin/customers olarak d?zenledik
+@RequestMapping("/api/admin/customers") // Yolu /api/admin/customers
 @RequiredArgsConstructor
 public class AdminCustomerControllerImpl implements IAdminCustomerController {
 
@@ -31,7 +34,15 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
             // page, size, sort parametrelerini otomatik doldurur
             Pageable pageable) {
 
-        Page<DtoAdminCustomer> customerPage = customerService.getCustomersWithPaginationAndSearch(dtoAdminCustomer, pageable);
+        // Eğer sort parametresi yoksa, default olarak firstName'e göre A-Z sırala
+        // (case-insensitive)
+        if (pageable.getSort().isUnsorted()) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(Sort.Order.asc("firstName").ignoreCase()));
+        }
+
+        Page<DtoAdminCustomer> customerPage = customerService.getCustomersWithPaginationAndSearch(dtoAdminCustomer,
+                pageable);
 
         return ResponseEntity.ok(customerPage); // HTTP 200 OK
     }
@@ -39,7 +50,8 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
     @Override
     @PostMapping("/add")
     // @Valid: DTO'daki validation kurallarını (NotBlank, Email, Size) aktif eder.
-    public ResponseEntity<DtoAdminCustomer> createCustomer(@Valid @RequestBody DtoAdminCustomerIU customerCreationDto) {
+    public ResponseEntity<DtoAdminCustomer> createCustomer(@Valid @RequestBody DtoAdminCustomerIU customerCreationDto,
+            HttpSession session) {
         DtoAdminCustomer createdCustomer = customerService.createCustomer(customerCreationDto);
         // Yeni bir kaynak oluşturulduğunda HTTP 201 Created döndürülür.
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
@@ -49,7 +61,8 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
     @PostMapping("/bulk") // Yolu: /api/admin/customers/bulk
     public ResponseEntity<List<DtoAdminCustomer>> createCustomersBulk(
             // @RequestBody: JSON dizisini otomatik List<DtoCustomerIU>'ya dönüştürür
-            @Valid @RequestBody List<DtoAdminCustomerIU> customerList) {
+            @Valid @RequestBody List<DtoAdminCustomerIU> customerList,
+            HttpSession session) {
 
         List<DtoAdminCustomer> createdList = customerService.createCustomersBulk(customerList);
 
@@ -58,8 +71,10 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
     }
 
     @Override
-    @PutMapping("update/{id}")
-    public ResponseEntity<DtoAdminCustomer> updateCustomer(@PathVariable Long id, @Valid @RequestBody DtoAdminCustomerIU updateDto){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<DtoAdminCustomer> updateCustomer(@PathVariable Long id,
+            @Valid @RequestBody DtoAdminCustomerIU updateDto,
+            HttpSession session) {
 
         DtoAdminCustomer updatedCustomer = customerService.updateCustomer(id, updateDto);
         return ResponseEntity.ok(updatedCustomer);
@@ -67,7 +82,7 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
 
     @Override
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id){
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id, HttpSession session) {
         customerService.deleteCustomer(id);
 
         return ResponseEntity.noContent().build();
@@ -75,14 +90,14 @@ public class AdminCustomerControllerImpl implements IAdminCustomerController {
 
 }
 /*
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-                <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
+ * <dependency>
+ * <groupId>org.springframework.security</groupId>
+ * <artifactId>spring-security-test</artifactId>
+ * <scope>test</scope>
+ * </dependency>
+ * <dependency>
+ * <groupId>org.springframework.boot</groupId>
+ * <artifactId>spring-boot-starter-security</artifactId>
+ * </dependency>
+ * 
  */

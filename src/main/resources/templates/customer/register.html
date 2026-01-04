@@ -1,101 +1,94 @@
 <!DOCTYPE html>
 <html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+
 <body>
     <div th:fragment="content">
-        <section class="page-header">
-            <div class="container">
-                <h1 class="page-title">Kayıt Ol</h1>
-                <p class="page-subtitle">Yeni hesap oluşturmak için bilgilerinizi giriniz</p>
-            </div>
-        </section>
-
         <section class="auth-section">
             <div class="container">
                 <div class="auth-container">
                     <div class="auth-card glass-card">
-                        <h2 class="auth-title">Kayıt Ol</h2>
-                        
-                        <!-- Hata Mesajı -->
-                        <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 0, 0, 0.1); color: #ff4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
-                            <span th:text="${errorMessage}"></span>
-                        </div>
+                        <h2 class="auth-title">
+                            <span style="color: var(--color-white);">Kayıt</span>
+                            <span style="color: var(--color-brg-light);">Ol</span>
+                        </h2>
 
                         <!-- Başarı Mesajı -->
-                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 255, 0, 0.1); color: #00aa00; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 0, 0.3);">
+                        <div th:if="${successMessage}" class="alert alert-success"
+                            style="background-color: rgba(0, 102, 68, 0.2); color: var(--color-brg-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 102, 68, 0.3);">
                             <span th:text="${successMessage}"></span>
                         </div>
 
-                        <form class="auth-form" method="post" th:action="@{/customer/auth/register}" th:object="${registrationDto}">
+                        <!-- Hata Mesajı -->
+                        <div th:if="${errorMessage}" class="alert alert-error"
+                            style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 77, 77, 0.3);">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <form class="auth-form" id="registerForm" method="post" th:action="@{/customer/auth/register}"
+                            th:object="${registrationDto}">
                             <div class="form-group">
                                 <label for="firstName">Ad</label>
-                                <input 
-                                    type="text" 
-                                    id="firstName" 
-                                    th:field="*{firstName}" 
-                                    class="form-input"
-                                    placeholder="Adınızı giriniz"
-                                    required>
-                                <div th:if="${#fields.hasErrors('firstName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <input type="text" id="firstName" th:field="*{firstName}" class="form-input"
+                                    placeholder="Adınızı giriniz" required>
+                                <div th:if="${#fields.hasErrors('firstName')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
                                     <span th:errors="*{firstName}"></span>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="lastName">Soyad</label>
-                                <input 
-                                    type="text" 
-                                    id="lastName" 
-                                    th:field="*{lastName}" 
-                                    class="form-input"
-                                    placeholder="Soyadınızı giriniz"
-                                    required>
-                                <div th:if="${#fields.hasErrors('lastName')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <input type="text" id="lastName" th:field="*{lastName}" class="form-input"
+                                    placeholder="Soyadınızı giriniz" required>
+                                <div th:if="${#fields.hasErrors('lastName')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
                                     <span th:errors="*{lastName}"></span>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    th:field="*{email}" 
-                                    class="form-input"
-                                    placeholder="ornek@email.com"
-                                    required>
-                                <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <input type="email" id="email" th:field="*{email}" class="form-input"
+                                    placeholder="ornek@email.com" required>
+                                <div th:if="${#fields.hasErrors('email')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
                                     <span th:errors="*{email}"></span>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="phoneNumber">Telefon Numarası <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem;">(Opsiyonel)</span></label>
-                                <input 
-                                    type="tel" 
-                                    id="phoneNumber" 
-                                    th:field="*{phoneNumber}" 
-                                    class="form-input"
+                                <label for="phoneNumber">Telefon Numarası <span
+                                        style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem;">(Opsiyonel)</span></label>
+                                <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-input"
                                     placeholder="05XX XXX XX XX">
-                                <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
                                     <span th:errors="*{phoneNumber}"></span>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="password">Şifre</label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    th:field="*{password}" 
-                                    class="form-input"
-                                    placeholder="Minimum 8 karakter"
-                                    required>
-                                <div th:if="${#fields.hasErrors('password')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <input type="password" id="password" th:field="*{password}" class="form-input"
+                                    placeholder="Minimum 8 karakter" required>
+                                <div th:if="${#fields.hasErrors('password')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
                                     <span th:errors="*{password}"></span>
                                 </div>
-                                <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 5px; display: block;">
+                                <small
+                                    style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 5px; display: block;">
                                     Şifre minimum 8 karakter olmalıdır
                                 </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Şifre Tekrar</label>
+                                <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                                    class="form-input" placeholder="Şifrenizi tekrar giriniz" required>
+                                <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message"
+                                    style="color: #ff4d4d; font-size: 0.875rem; margin-top: 5px;">
+                                    <span th:errors="*{confirmPassword}"></span>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
@@ -103,14 +96,424 @@
                             </button>
                         </form>
 
-                        <div class="auth-footer" style="margin-top: 20px; text-align: center; color: rgba(255, 255, 255, 0.7);">
-                            <p>Zaten hesabınız var mı? <a th:href="@{/customer/auth/login}" style="color: #00ff88;">Giriş yapın</a></p>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">
+                                Zaten hesabınız var mı? <a th:href="@{/customer/auth/login}"
+                                    style="color: var(--color-brg-light); text-decoration: none;">Giriş yapın</a>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <style>
+            .auth-section {
+                min-height: calc(100vh - 160px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: calc(var(--spacing-lg) + 40px) var(--spacing-sm) var(--spacing-lg);
+                background: linear-gradient(135deg, var(--color-black) 0%, var(--color-black-soft) 100%);
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* Arka plan animasyonu */
+            .auth-section::before {
+                content: '';
+                position: absolute;
+                width: 150%;
+                height: 150%;
+                background: radial-gradient(circle at center,
+                        rgba(0, 102, 68, 0.1) 0%,
+                        transparent 50%);
+                animation: pulse 8s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1) rotate(0deg);
+                    opacity: 0.5;
+                }
+
+                50% {
+                    transform: scale(1.1) rotate(180deg);
+                    opacity: 0.8;
+                }
+            }
+
+            .auth-container {
+                width: clamp(320px, 48vw, 850px);
+                position: relative;
+                z-index: 1;
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .auth-card {
+                padding: clamp(2rem, 5vw, 3.5rem);
+                position: relative;
+            }
+
+            /* Üst border */
+            .auth-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg,
+                        transparent,
+                        var(--color-brg-light),
+                        transparent);
+            }
+
+            .auth-title {
+                font-family: var(--font-accent);
+                font-size: clamp(2rem, 5vw, 2.8rem);
+                color: var(--color-white);
+                margin-bottom: var(--spacing-lg);
+                text-align: center;
+                position: relative;
+                letter-spacing: 2px;
+                text-shadow: 0 0 20px rgba(0, 102, 68, 0.5);
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+
+            @keyframes glow {
+                from {
+                    text-shadow: 0 0 10px rgba(0, 102, 68, 0.5);
+                }
+
+                to {
+                    text-shadow: 0 0 25px rgba(0, 102, 68, 0.8), 0 0 35px rgba(0, 102, 68, 0.5);
+                }
+            }
+
+            .auth-title::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: linear-gradient(90deg,
+                        transparent,
+                        var(--color-brg-light),
+                        transparent);
+                border-radius: 2px;
+            }
+
+            .auth-form {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--color-gray-light);
+                font-weight: 500;
+                font-size: 0.95rem;
+                letter-spacing: 0.5px;
+            }
+
+            .form-input {
+                width: 100%;
+                padding: 16px 18px;
+                background: rgba(26, 26, 26, 0.9);
+                border: 2px solid rgba(0, 102, 68, 0.3);
+                border-radius: var(--radius-sm);
+                color: var(--color-white);
+                font-family: var(--font-primary);
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .form-input:hover {
+                border-color: rgba(0, 102, 68, 0.5);
+                background: rgba(0, 102, 68, 0.05);
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: var(--color-brg-light);
+                background: rgba(0, 102, 68, 0.1);
+                box-shadow: 0 0 0 4px rgba(0, 102, 68, 0.2),
+                    0 0 20px rgba(0, 102, 68, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .btn-primary {
+                padding: 16px 32px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                letter-spacing: 1px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+
+            .btn-primary:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+            /* Alert stilleri */
+            .alert {
+                animation: slideDown 0.4s ease-out;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Link stilleri */
+            .auth-card a {
+                display: inline-block;
+                color: var(--color-brg-light);
+                text-decoration: none;
+                font-weight: 500;
+                position: relative;
+                padding: 8px 0;
+                transition: all 0.3s ease;
+            }
+
+            .auth-card a::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--color-brg-light);
+                transition: width 0.3s ease;
+            }
+
+            .auth-card a:hover {
+                color: var(--color-brg-glow);
+            }
+
+            .auth-card a:hover::after {
+                width: 100%;
+            }
+
+            /* Responsive tasarım */
+            @media (min-width: 1920px) {
+                .auth-container {
+                    width: clamp(750px, 40vw, 950px);
+                }
+            }
+
+            @media (max-width: 1200px) {
+                .auth-container {
+                    width: clamp(400px, 60vw, 750px);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .auth-container {
+                    width: clamp(350px, 85vw, 600px);
+                }
+
+                .auth-card {
+                    padding: clamp(1.5rem, 4vw, 2.5rem);
+                }
+
+                .auth-title {
+                    font-size: clamp(1.75rem, 6vw, 2.2rem);
+                    margin-bottom: var(--spacing-md);
+                }
+
+                .form-input {
+                    padding: 14px 16px;
+                    font-size: 0.95rem;
+                }
+
+                .btn-primary {
+                    padding: 14px 28px;
+                    font-size: 1rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .auth-section {
+                    padding: var(--spacing-sm);
+                }
+
+                .auth-container {
+                    width: clamp(300px, 92vw, 450px);
+                }
+
+                .auth-card {
+                    padding: 1.5rem;
+                }
+
+                .form-input {
+                    padding: 12px 14px;
+                }
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const registerForm = document.getElementById('registerForm');
+                const firstNameInput = document.getElementById('firstName');
+                const lastNameInput = document.getElementById('lastName');
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+                const confirmPasswordInput = document.getElementById('confirmPassword');
+
+                registerForm.addEventListener('submit', function (e) {
+                    const firstName = firstNameInput.value ? firstNameInput.value.trim() : '';
+                    const lastName = lastNameInput.value ? lastNameInput.value.trim() : '';
+                    const email = emailInput.value ? emailInput.value.trim() : '';
+                    const password = passwordInput.value;
+                    const confirmPassword = confirmPasswordInput.value;
+
+                    // Ad kontrolü
+                    if (!firstName) {
+                        e.preventDefault();
+                        firstNameInput.setCustomValidity('Ad alanı zorunludur.');
+                        firstNameInput.reportValidity();
+                        return false;
+                    }
+
+                    // Soyad kontrolü
+                    if (!lastName) {
+                        e.preventDefault();
+                        lastNameInput.setCustomValidity('Soyad alanı zorunludur.');
+                        lastNameInput.reportValidity();
+                        return false;
+                    }
+
+                    // Email kontrolü
+                    if (!email) {
+                        e.preventDefault();
+                        emailInput.setCustomValidity('Email alanı zorunludur.');
+                        emailInput.reportValidity();
+                        return false;
+                    }
+
+                    // Email format kontrolü
+                    const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
+                    if (!emailRegex.test(email)) {
+                        e.preventDefault();
+                        emailInput.setCustomValidity('Geçerli bir email adresi giriniz.');
+                        emailInput.reportValidity();
+                        return false;
+                    }
+
+                    // Şifre kontrolü
+                    if (!password || password.trim() === '') {
+                        e.preventDefault();
+                        passwordInput.setCustomValidity('Şifre alanı zorunludur.');
+                        passwordInput.reportValidity();
+                        return false;
+                    }
+
+                    // Şifre uzunluk kontrolü
+                    if (password.length < 8) {
+                        e.preventDefault();
+                        passwordInput.setCustomValidity('Şifre en az 8 karakter olmalıdır.');
+                        passwordInput.reportValidity();
+                        return false;
+                    }
+
+                    // Şifre tekrar kontrolü
+                    if (!confirmPassword || confirmPassword.trim() === '') {
+                        e.preventDefault();
+                        confirmPasswordInput.setCustomValidity('Şifre tekrar alanı zorunludur.');
+                        confirmPasswordInput.reportValidity();
+                        return false;
+                    }
+
+                    // Şifre eşleşme kontrolü
+                    if (password !== confirmPassword) {
+                        e.preventDefault();
+                        confirmPasswordInput.setCustomValidity('Şifreler eşleşmiyor.');
+                        confirmPasswordInput.reportValidity();
+                        return false;
+                    }
+
+                    // Validation başarılı, custom validity'yi temizle
+                    firstNameInput.setCustomValidity('');
+                    lastNameInput.setCustomValidity('');
+                    emailInput.setCustomValidity('');
+                    passwordInput.setCustomValidity('');
+                    confirmPasswordInput.setCustomValidity('');
+                    return true;
+                });
+
+                // Input değiştiğinde custom validity'yi temizle
+                firstNameInput.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+
+                lastNameInput.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+
+                emailInput.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+
+                passwordInput.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+
+                confirmPasswordInput.addEventListener('input', function () {
+                    this.setCustomValidity('');
+                });
+            });
+        </script>
     </div>
 </body>
-</html>
 
+</html>

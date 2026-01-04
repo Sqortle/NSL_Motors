@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -20,9 +22,14 @@ public interface AdminOrderRepository extends JpaRepository<Order, Long>,
     List<Order> findByCustomerId(Long customerId);
 
     // YENİ GEREKSİNİM: Çalışanın kendi ID'sine bağlı, bugünden itibaren olan siparişleri çeker.
+    @Query("SELECT o FROM Order o WHERE o.technician IS NOT NULL AND o.technician.id = :technicianId AND o.orderDate >= :startDate")
     Page<Order> findByTechnicianIdAndOrderDateGreaterThanEqual(
-            Long technicianId,
-            LocalDateTime localDateTime,
+            @Param("technicianId") Long technicianId,
+            @Param("startDate") LocalDateTime startDate,
             Pageable pageable
     );
+
+    // Teknisyene ait tüm siparişleri çeker
+    @Query("SELECT o FROM Order o WHERE o.technician IS NOT NULL AND o.technician.id = :technicianId")
+    Page<Order> findByTechnicianId(@Param("technicianId") Long technicianId, Pageable pageable);
 }

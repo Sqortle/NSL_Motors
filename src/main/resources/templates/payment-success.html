@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+<body>
+    <div th:fragment="content">
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Ödeme Başarılı</h1>
+                <p class="page-subtitle">Randevunuz başarıyla oluşturuldu</p>
+            </div>
+        </section>
+
+        <section class="catalog-section">
+            <div class="container">
+                <div class="success-container">
+                    <div class="success-icon glass-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="var(--color-brg-light)"/>
+                        </svg>
+                    </div>
+
+                    <h1 style="color: var(--color-brg-light); font-family: var(--font-accent); font-size: 2.5rem; margin-bottom: var(--spacing-sm);">Ödeme Başarılı!</h1>
+                    <p style="color: var(--color-gray); font-size: 1.125rem; line-height: 1.6; margin-bottom: var(--spacing-lg);">Randevunuz başarıyla oluşturuldu ve ödemeniz alındı.</p>
+
+                    <div class="transaction-box glass-card">
+                        <label style="color: var(--color-gray); font-size: 0.875rem; display: block; margin-bottom: var(--spacing-xs);">İşlem Numarası</label>
+                        <div class="transaction-ref" th:text="${transactionRef}">NSL12345678</div>
+                    </div>
+
+                    <div class="info-box glass-card">
+                        <h3 style="color: var(--color-brg-light); font-size: 1.125rem; margin-bottom: var(--spacing-sm); font-family: var(--font-accent);">Sırada Ne Var?</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="color: var(--color-gray); font-size: 0.875rem; padding: var(--spacing-xs) 0; padding-left: 25px; position: relative;">
+                                <span style="color: var(--color-brg-light); position: absolute; left: 0; font-weight: bold;">✓</span>
+                                Email adresinize detaylı fatura gönderildi
+                            </li>
+                            <li style="color: var(--color-gray); font-size: 0.875rem; padding: var(--spacing-xs) 0; padding-left: 25px; position: relative;">
+                                <span style="color: var(--color-brg-light); position: absolute; left: 0; font-weight: bold;">✓</span>
+                                Randevu detayları profilinizde görüntülenebilir
+                            </li>
+                            <li style="color: var(--color-gray); font-size: 0.875rem; padding: var(--spacing-xs) 0; padding-left: 25px; position: relative;">
+                                <span style="color: var(--color-brg-light); position: absolute; left: 0; font-weight: bold;">✓</span>
+                                Randevu tarihinizden önce size hatırlatma göndereceğiz
+                            </li>
+                            <li style="color: var(--color-gray); font-size: 0.875rem; padding: var(--spacing-xs) 0; padding-left: 25px; position: relative;">
+                                <span style="color: var(--color-brg-light); position: absolute; left: 0; font-weight: bold;">✓</span>
+                                Herhangi bir sorunuz varsa bizimle iletişime geçebilirsiniz
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a th:href="@{/customer/profile}" class="btn btn-primary">Randevularım</a>
+                        <a th:href="@{/catalog}" class="btn btn-secondary">Katalog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            .success-container {
+                max-width: 600px;
+                margin: var(--spacing-xl) auto;
+                text-align: center;
+            }
+
+            .success-icon {
+                width: 100px;
+                height: 100px;
+                margin: 0 auto var(--spacing-lg);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+
+            @keyframes successPop {
+                0% {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .success-icon svg {
+                width: 50px;
+                height: 50px;
+            }
+
+            .transaction-box {
+                padding: var(--spacing-md);
+                margin: var(--spacing-lg) 0;
+            }
+
+            .transaction-ref {
+                color: var(--color-brg-light);
+                font-size: 1.25rem;
+                font-weight: bold;
+                font-family: 'Courier New', monospace;
+            }
+
+            .info-box {
+                padding: var(--spacing-lg);
+                margin: var(--spacing-lg) 0;
+                text-align: left;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: var(--spacing-sm);
+                justify-content: center;
+                margin-top: var(--spacing-xl);
+            }
+
+            @media (max-width: 768px) {
+                .success-container {
+                    margin-top: var(--spacing-lg);
+                }
+
+                .success-container h1 {
+                    font-size: 2rem;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </div>
+</body>
+</html>

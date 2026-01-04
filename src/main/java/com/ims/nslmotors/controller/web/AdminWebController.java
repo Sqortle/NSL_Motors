@@ -20,6 +20,9 @@ public class AdminWebController {
         
         model.addAttribute("title", "Admin Paneli");
         model.addAttribute("adminEmail", session.getAttribute("adminEmail"));
+        model.addAttribute("employeeFirstName", session.getAttribute("employeeFirstName"));
+        model.addAttribute("employeeLastName", session.getAttribute("employeeLastName"));
+        model.addAttribute("employeeRole", session.getAttribute("employeeRole"));
         return "admin/dashboard";
     }
 }

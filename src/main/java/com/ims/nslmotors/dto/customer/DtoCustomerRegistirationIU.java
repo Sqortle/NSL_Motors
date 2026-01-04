@@ -23,6 +23,9 @@ public class DtoCustomerRegistirationIU {
     @Size(min = 8, message = "Şifre minimum 8 karakter olmalıdır.")
     private String password;
 
+    @NotBlank(message = "Şifre tekrarı zorunludur.")
+    private String confirmPassword;
+
     // Doğrulama Kodu: Üyelik akışında zorunlu olacak
     @Size(min = 6, max = 6, message = "Doğrulama kodu 6 haneli olmalıdır.")
     private String verificationCode;

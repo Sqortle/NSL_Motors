@@ -3,7 +3,7 @@ package com.ims.nslmotors.services.admin.impl;
 import com.ims.nslmotors.dto.admin.DtoAdminInvoice;
 import com.ims.nslmotors.model.Invoice;
 import com.ims.nslmotors.repository.admin.AdminInvoiceRepository;
-import com.ims.nslmotors.repository.admin.AdminOrderRepository; // Order'a erişim için
+import com.ims.nslmotors.repository.admin.AdminOrderRepository;
 import com.ims.nslmotors.services.admin.IAdminInvoiceService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +29,16 @@ public class AdminInvoiceServiceImpl implements IAdminInvoiceService {
         BeanUtils.copyProperties(invoice, dto);
 
         // İlişkisel OrderNumber bilgisini ekle
-        dto.setOrderId(invoice.getOrder().getId());
-        dto.setOrderNumber(invoice.getOrder().getOrderNumber());
+        if (invoice.getOrder() != null) {
+            dto.setOrderId(invoice.getOrder().getId());
+            dto.setOrderNumber(invoice.getOrder().getOrderNumber());
+        } else if (invoice.getId() != null) {
+            // Order yüklenmemişse, OrderRepository'den çek (fallback)
+            orderRepository.findById(invoice.getId()).ifPresent(order -> {
+                dto.setOrderId(order.getId());
+                dto.setOrderNumber(order.getOrderNumber());
+            });
+        }
 
         return dto;
     }
@@ -47,6 +55,9 @@ public class AdminInvoiceServiceImpl implements IAdminInvoiceService {
     private Specification<Invoice> buildSpecification(DtoAdminInvoice criteria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            // Order'ı join et (lazy loading sorununu önlemek için)
+            root.fetch("order");
 
             // 1. Order Number ARAMA (Order Entity'sinden çekilir)
             if (criteria.getOrderNumber() != null && !criteria.getOrderNumber().isEmpty()) {
@@ -68,6 +79,4 @@ public class AdminInvoiceServiceImpl implements IAdminInvoiceService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
-
 }

@@ -1,72 +1,385 @@
 <!DOCTYPE html>
 <html lang="tr" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout}">
+
 <body>
     <div th:fragment="content">
         <section class="page-header">
             <div class="container">
-                <h1 class="page-title">Giriş Yap</h1>
+                <h1 class="page-title">
+                    <span style="color: var(--color-white);">Giriş</span>
+                    <span style="color: var(--color-brg-light);">Yap</span>
+                </h1>
                 <p class="page-subtitle">Hesabınıza giriş yapmak için email ve şifrenizi giriniz</p>
             </div>
         </section>
 
-        <section class="auth-section">
+        <section class="customer-auth-section">
             <div class="container">
-                <div class="auth-container">
-                    <div class="auth-card glass-card">
-                        <h2 class="auth-title">Giriş Yap</h2>
-                        
+                <div class="customer-auth-container">
+                    <div class="customer-auth-card glass-card">
+
                         <!-- Hata Mesajı -->
-                        <div th:if="${errorMessage}" class="alert alert-error" style="background-color: rgba(255, 0, 0, 0.1); color: #ff4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 0, 0, 0.3);">
+                        <div th:if="${errorMessage}" class="alert alert-error">
                             <span th:text="${errorMessage}"></span>
                         </div>
 
                         <!-- Başarı Mesajı -->
-                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: rgba(0, 255, 0, 0.1); color: #00aa00; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 0, 0.3);">
+                        <div th:if="${successMessage}" class="alert alert-success">
                             <span th:text="${successMessage}"></span>
                         </div>
 
-                        <form class="auth-form" method="post" th:action="@{/customer/auth/login}" th:object="${loginDto}">
+                        <form class="customer-auth-form" method="post" th:action="@{/customer/auth/login}"
+                            th:object="${loginDto}">
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    th:field="*{email}" 
-                                    class="form-input"
-                                    placeholder="ornek@email.com"
-                                    required>
-                                <div th:if="${#fields.hasErrors('email')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" th:field="*{email}" class="form-input"
+                                    placeholder="ornek@email.com" required>
+                                <div th:if="${#fields.hasErrors('email')}" class="error-message">
                                     <span th:errors="*{email}"></span>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="password">Şifre</label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    th:field="*{password}" 
-                                    class="form-input"
-                                    placeholder="Şifrenizi giriniz"
-                                    required>
-                                <div th:if="${#fields.hasErrors('password')}" class="error-message" style="color: #ff4444; font-size: 0.875rem; margin-top: 5px;">
+                                <div class="password-label-wrapper">
+                                    <label for="password" class="form-label">Şifre</label>
+                                    <label class="password-checkbox-label">
+                                        <input type="checkbox" class="password-checkbox" onclick="togglePassword()">
+                                        <span class="checkbox-text">Göster</span>
+                                    </label>
+                                </div>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="password" th:field="*{password}" class="form-input"
+                                        placeholder="Şifrenizi giriniz" required>
+                                </div>
+                                <div th:if="${#fields.hasErrors('password')}" class="error-message">
                                     <span th:errors="*{password}"></span>
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary btn-login">
                                 Giriş Yap
                             </button>
                         </form>
 
-                        <div class="auth-footer" style="margin-top: 20px; text-align: center; color: rgba(255, 255, 255, 0.7);">
-                            <p>Hesabınız yok mu? <a th:href="@{/customer/auth/register}" style="color: #00ff88;">Kayıt olun</a></p>
+                        <div class="auth-footer">
+                            <p class="auth-footer-text">
+                                Hesabınız yok mu?
+                                <a th:href="@{/customer/auth/register}" class="auth-link">Kayıt olun</a>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <style>
+            /* Custom header for login page */
+            .page-header {
+                padding: calc(var(--spacing-xl) + 60px) 0 var(--spacing-md) 0 !important;
+                margin-bottom: var(--spacing-md) !important;
+                min-height: auto !important;
+            }
+
+            .page-header .page-title {
+                font-size: 2rem !important;
+                margin-bottom: 12px !important;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .page-header .page-subtitle {
+                font-size: 0.95rem !important;
+                opacity: 0.85;
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            .customer-auth-section {
+                padding: var(--spacing-lg) 0;
+                min-height: 60vh;
+                display: flex;
+                align-items: center;
+                position: relative;
+            }
+
+            .customer-auth-container {
+                max-width: 420px;
+                margin: 0 auto;
+                animation: fadeInUp 0.5s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .customer-auth-card {
+                padding: var(--spacing-lg) var(--spacing-xl);
+                position: relative;
+                border: 1px solid rgba(0, 102, 68, 0.2);
+            }
+
+            .customer-auth-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg,
+                        transparent,
+                        var(--color-brg-light),
+                        transparent);
+            }
+
+            .customer-auth-form {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-label {
+                color: var(--color-gray-light);
+                font-weight: 600;
+                font-size: 0.9rem;
+                letter-spacing: 0.3px;
+            }
+
+            .password-label-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            .password-checkbox-label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .password-checkbox {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+                accent-color: var(--color-brg-light);
+            }
+
+            .checkbox-text {
+                color: var(--color-gray-light);
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .password-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+            .form-input {
+                width: 100%;
+                padding: 12px 16px;
+                background: rgba(26, 26, 26, 0.8);
+                border: 2px solid rgba(0, 102, 68, 0.3);
+                border-radius: var(--radius-sm);
+                color: var(--color-white);
+                font-family: var(--font-primary);
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
+
+            .form-input::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .form-input:hover {
+                border-color: rgba(0, 102, 68, 0.5);
+                background: rgba(0, 102, 68, 0.05);
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: var(--color-brg-light);
+                background: rgba(0, 102, 68, 0.1);
+                box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.12);
+            }
+
+            .btn-login {
+                width: 100%;
+                margin-top: var(--spacing-sm);
+                padding: 13px 24px;
+                font-size: 1rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 102, 68, 0.3);
+            }
+
+            .alert {
+                padding: 12px 16px;
+                border-radius: var(--radius-sm);
+                margin-bottom: var(--spacing-md);
+                font-size: 0.9rem;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-15px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .alert-error {
+                background: rgba(255, 77, 77, 0.1);
+                color: #ff6b6b;
+                border: 1px solid rgba(255, 77, 77, 0.3);
+            }
+
+            .alert-success {
+                background: rgba(0, 102, 68, 0.2);
+                color: var(--color-brg-light);
+                border: 1px solid rgba(0, 102, 68, 0.4);
+            }
+
+            .alert-icon {
+                font-size: 1.2rem;
+            }
+
+            .error-message {
+                color: #ff6b6b;
+                font-size: 0.85rem;
+                margin-top: -4px;
+            }
+
+            .auth-footer {
+                margin-top: var(--spacing-lg);
+                padding-top: var(--spacing-md);
+                border-top: 1px solid rgba(0, 102, 68, 0.2);
+            }
+
+            .auth-divider {
+                position: relative;
+                text-align: center;
+                margin: var(--spacing-lg) 0;
+            }
+
+            .auth-divider::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg,
+                        transparent,
+                        rgba(0, 102, 68, 0.3),
+                        transparent);
+            }
+
+            .auth-divider span {
+                position: relative;
+                background: var(--color-black-soft);
+                padding: 0 var(--spacing-md);
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.9rem;
+            }
+
+            .auth-footer-text {
+                text-align: center;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.9rem;
+            }
+
+            .auth-link {
+                color: var(--color-brg-light);
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.2s ease;
+            }
+
+            .auth-link:hover {
+                color: var(--color-brg-glow);
+                text-decoration: underline;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .customer-auth-container {
+                    max-width: 380px;
+                }
+
+                .customer-auth-card {
+                    padding: var(--spacing-md) var(--spacing-lg);
+                }
+
+                .form-input {
+                    padding: 11px 14px;
+                    font-size: 0.9rem;
+                }
+
+                .btn-login {
+                    padding: 12px 20px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .customer-auth-container {
+                    max-width: 100%;
+                }
+
+                .customer-auth-card {
+                    padding: var(--spacing-md);
+                }
+
+                .form-input {
+                    padding: 10px 12px;
+                }
+
+                .btn-login {
+                    padding: 11px 18px;
+                }
+            }
+        </style>
+
+        <script>
+            function togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const checkbox = document.querySelector('.password-checkbox');
+
+                if (checkbox.checked) {
+                    passwordInput.type = 'text';
+                } else {
+                    passwordInput.type = 'password';
+                }
+            }
+        </script>
     </div>
 </body>
-</html>
 
+</html>

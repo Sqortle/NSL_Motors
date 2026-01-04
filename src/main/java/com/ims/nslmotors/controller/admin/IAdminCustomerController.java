@@ -2,6 +2,7 @@ package com.ims.nslmotors.controller.admin;
 
 import com.ims.nslmotors.dto.admin.DtoAdminCustomer;
 import com.ims.nslmotors.dto.admin.DtoAdminCustomerIU; // Yeni import
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,15 @@ public interface IAdminCustomerController {
 
     ResponseEntity<Page<DtoAdminCustomer>> getCustomers(DtoAdminCustomer dtoAdminCustomer, Pageable pageable);
 
-    ResponseEntity<DtoAdminCustomer> createCustomer(@Valid DtoAdminCustomerIU customerCreationDto);
+    ResponseEntity<DtoAdminCustomer> createCustomer(@Valid DtoAdminCustomerIU customerCreationDto,
+                                                    HttpSession session);
 
-    ResponseEntity<List<DtoAdminCustomer>> createCustomersBulk(@Valid List<DtoAdminCustomerIU> customerList);
+    ResponseEntity<List<DtoAdminCustomer>> createCustomersBulk(@Valid List<DtoAdminCustomerIU> customerList,
+                                                               HttpSession session);
 
-    ResponseEntity<DtoAdminCustomer> updateCustomer(Long id, @Valid DtoAdminCustomerIU updateDto);
+    ResponseEntity<DtoAdminCustomer> updateCustomer(Long id,
+                                                    @Valid DtoAdminCustomerIU updateDto,
+                                                    HttpSession session);
 
-    ResponseEntity<Void> deleteCustomer(Long id);
+    ResponseEntity<Void> deleteCustomer(Long id, HttpSession session);
 }

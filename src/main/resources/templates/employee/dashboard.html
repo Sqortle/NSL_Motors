@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çalışan Paneli - NSL Motors</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        :root {
+            --color-black: #000000;
+            --color-black-soft: #0a0a0a;
+            --color-black-lighter: #1a1a1a;
+            --color-brg: #004225;
+            --color-brg-light: #006644;
+            --color-brg-dark: #002d1a;
+            --color-brg-glow: #00ff88;
+            --color-white: #ffffff;
+            --color-gray: #888888;
+            --color-gray-light: #cccccc;
+            --color-gray-dark: #333333;
+            --font-primary: 'Inter', sans-serif;
+            --font-accent: 'Racing Sans One', cursive;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 3rem;
+            --spacing-xl: 4rem;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-brg: 0 0 20px rgba(0, 102, 68, 0.3);
+            --shadow-brg-glow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Racing+Sans+One&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Employee Header -->
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <h1 class="admin-title">
+                    <span class="logo-text">NSL</span>
+                    <span class="logo-accent">MOTORS</span>
+                    <span class="admin-badge">Çalışan Paneli</span>
+                </h1>
+                <div class="admin-actions">
+                    <span style="color: var(--color-gray-light); margin-right: 15px;" th:text="${employeeEmail}"></span>
+                    <span style="color: var(--color-gray); margin-right: 15px;" th:text="'Rol: ' + ${employeeRole}"></span>
+                    <a th:href="@{/admin/auth/logout}" class="btn btn-secondary">Çıkış Yap</a>
+                    <a th:href="@{/}" class="btn btn-secondary" style="margin-left: 10px;">Ana Sayfaya Dön</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Orders Section -->
+            <div class="tab-content active" id="orders-tab">
+                <div class="module-header">
+                    <h2>Atanan Siparişlerim</h2>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Müşteri</th>
+                                <th>Araba</th>
+                                <th>Stage</th>
+                                <th>Sipariş Tarihi</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <tr>
+                                <td colspan="7" class="loading">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="orders-pagination"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div id="statusModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Sipariş Durumu Güncelle</h3>
+                <button class="modal-close" onclick="closeStatusModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <input type="hidden" id="statusOrderId">
+                    <div class="form-group">
+                        <label for="orderStatus">Yeni Durum:</label>
+                        <select id="orderStatus" required>
+                            <option value="">Seçiniz</option>
+                            <option value="BEKLEMEDE">Beklemede</option>
+                            <option value="ONAYLANDI">Onaylandı</option>
+                            <option value="HAZIRLANIYOR">Hazırlanıyor</option>
+                            <option value="TAMAMLANDI">Tamamlandı</option>
+                            <option value="IPTAL">İptal</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeStatusModal()">İptal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = { orders: 0 };
+        const pageSize = 10;
+
+        // Sayfa yüklendiğinde siparişleri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+
+        async function loadOrders(page = 0) {
+            const url = `/api/employee/orders?page=${page}&size=${pageSize}&sort=orderDate,desc`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Siparişler yüklenemedi');
+                }
+                
+                const data = await response.json();
+                currentPage.orders = page;
+                displayOrders(data.content);
+                displayPagination(data, 'orders');
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('orders-tbody').innerHTML = 
+                    '<tr><td colspan="7" class="error">Siparişler yüklenemedi.</td></tr>';
+            }
+        }
+
+        function displayOrders(orders) {
+            const tbody = document.getElementById('orders-tbody');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="loading">Atanan sipariş bulunmamaktadır.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = orders.map(order => `
+                <tr>
+                    <td>${order.orderNumber || '-'}</td>
+                    <td>${order.customerFullName || '-'}</td>
+                    <td>${order.carMake || ''} ${order.carModel || ''}</td>
+                    <td>${order.stageSelected || '-'}</td>
+                    <td>${formatDate(order.orderDate)}</td>
+                    <td><span class="status-badge status-${order.status?.toLowerCase() || 'beklemede'}">${getStatusText(order.status)}</span></td>
+                    <td class="btn-actions">
+                        <button class="btn btn-sm btn-primary" onclick="openStatusModal(${order.id}, '${order.status || ''}')">
+                            Durum Güncelle
+                        </button>
+                        <button class="btn btn-sm" style="background: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3);" onclick="cancelOrder(${order.id})">
+                            İptal Et
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'BEKLEMEDE': 'Beklemede',
+                'ONAYLANDI': 'Onaylandı',
+                'HAZIRLANIYOR': 'Hazırlanıyor',
+                'TAMAMLANDI': 'Tamamlandı',
+                'IPTAL': 'İptal'
+            };
+            return statusMap[status] || status || 'Bilinmiyor';
+        }
+
+        function displayPagination(data, type) {
+            const pagination = document.getElementById(`${type}-pagination`);
+            if (!data.totalPages || data.totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (data.number > 0) {
+                html += `<button class="btn btn-sm" onclick="loadOrders(${data.number - 1})">Önceki</button>`;
+            }
+            html += `<span style="margin: 0 15px; color: var(--color-gray-light);">Sayfa ${data.number + 1} / ${data.totalPages}</span>`;
+            if (data.number < data.totalPages - 1) {
+                html += `<button class="btn btn-sm" onclick="loadOrders(${data.number + 1})">Sonraki</button>`;
+            }
+            pagination.innerHTML = html;
+        }
+
+        function openStatusModal(orderId, currentStatus) {
+            document.getElementById('statusOrderId').value = orderId;
+            document.getElementById('orderStatus').value = currentStatus;
+            document.getElementById('statusModal').style.display = 'block';
+        }
+
+        function closeStatusModal() {
+            document.getElementById('statusModal').style.display = 'none';
+            document.getElementById('statusForm').reset();
+        }
+
+        document.getElementById('statusForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('statusOrderId').value;
+            const newStatus = document.getElementById('orderStatus').value;
+
+            try {
+                const response = await fetch(`/api/employee/orders/${orderId}/status?status=${newStatus}`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    closeStatusModal();
+                    loadOrders(currentPage.orders);
+                    alert('Sipariş durumu güncellendi.');
+                } else {
+                    alert('Durum güncellenemedi. Lütfen tekrar deneyin.');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Bir hata oluştu.');
+            }
+        });
+
+        // Modal dışına tıklanınca kapat
+        window.onclick = function(event) {
+            const modal = document.getElementById('statusModal');
+            if (event.target == modal) {
+                closeStatusModal();
+            }
+        }
+
+        async function cancelOrder(orderId) {
+            if (!confirm('Bu siparişi iptal etmek istediğinize emin misiniz?')) return;
+
+            try {
+                const response = await fetch(`/api/employee/orders/${orderId}/status?status=IPTAL`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    loadOrders(currentPage.orders);
+                    alert('Sipariş iptal edildi.');
+                } else {
+                    alert('Sipariş iptal edilemedi. Lütfen tekrar deneyin.');
+                }
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                alert('Bir hata oluştu.');
+            }
+        }
+    </script>
+</body>
+</html>
+
